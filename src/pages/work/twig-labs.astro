@@ -1,0 +1,346 @@
+---
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import Figure from "../../components/Figure.astro";
+import Annotated from "../../components/Annotated.astro";
+
+const img = (n: string) => `/images/twig/${n}.webp`;
+
+// All copy below comes from the Twig Labs case study in Figma (typos fixed).
+const products = [
+  { title: "Learn through stories and study", body: "Children enjoy reading the stories and comics in Twig's structured library. Story-led, engaging, and comes with inbuilt assessment options.", cta: "CBSE - Aligned Library", bg: "#f99244", btn: "#ffba92", border: "#ad5707", icon: "library" },
+  { title: "Learn how money works in real life", body: "Your child applies the learning from library to a life simulation game where they make money decisions - spending, saving, investing, and more without real-world risk.", cta: "Life Simulation Game", bg: "#d96f4f", btn: "#d9a291", border: "#82422f", icon: "game" },
+  { title: "Learn from experience", body: "Their choices create visible outcomes. VED our personalised AI coach helps them understand their patterns and improve over time.", cta: "Ved - Personal AI Coach", bg: "#c35e79", btn: "#e09aad", border: "#ba2a50", icon: "bot" },
+  { title: "Learn through industry experts", body: "Your child joins live, expert led workshops where Twig's content comes to life through guided discussions, quizzes, and activities that help them grasp money concepts with confidence.", cta: "Expert - Led Workshop", bg: "#ba6abb", btn: "#c889cb", border: "#7a2d78", icon: "clipboard" },
+];
+
+// Lucide icon paths (the same icons used in the Figma design)
+const icons: Record<string, string> = {
+  library: '<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
+  game: '<line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/>',
+  bot: '<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>',
+  clipboard: '<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+};
+
+const audits = [
+  {
+    src: img("audit-dashboard"), w: 1050, h: 602, caption: "old dashboard",
+    alt: "Old Twig dashboard with dashed highlights over the welcome banner, learning path, games and modules, logout button and footer navigation",
+    notes: [
+      { x: 23.2, y: 10, title: "Match Between the System & the Real World", body: "Lack of personalisation for user as it uses details from mail automatically and shows the roll number." },
+      { x: 3.1, y: 36.5, title: "Recognition Rather Than Recall", body: "Lack of clarity — title not reflecting the actual steps to follow, instead showing only different library." },
+      { x: 77.7, y: 6.3, title: "User Control & Freedom", body: "The only highlighted CTA on the entire screen is logout. It fails to provide immediate control actions to users over their primary workspace — trapping them into leaving rather than managing." },
+      { x: 23.8, y: 33.9, title: "Aesthetic & Minimalist Design", body: "Image grabbing more visual attention and hard for users to find the CTA in the image." },
+      { x: 3, y: 90.5, title: "Consistency & Standards", body: "Position of navigation tab is not intuitive for users and lack of consistency across pages." },
+    ],
+    thoughts: [
+      "What should I do first? Visit library or play game?",
+      "Where can I see my progress and see where I left last time?",
+      "What will be today's task? What are the rewards for completing the task?",
+      "Where can I find my streaks and reward XP points?",
+    ],
+  },
+  {
+    src: img("audit-library"), w: 1050, h: 598, caption: "old library page for learning contents",
+    alt: "Old Twig library page with a long curriculum sidebar and comic-style lesson content",
+    notes: [
+      { x: 3, y: 16.4, title: "Recognition Rather Than Recall", body: "No visual feedback for the users to recognise, difficult to access the sub lessons, and as the number increases it becomes hard for users to navigate across all the options." },
+      { x: 97, y: 5.7, title: "Consistency & Standards", body: "Lack of options for navigation in the platform." },
+    ],
+    thoughts: [
+      "To select, I have to go inside each lesson. Why am I not able to see a preview from outside?",
+      "What if I have some doubts, where can I ask?",
+    ],
+  },
+  {
+    src: img("audit-website"), w: 1050, h: 832, caption: "old website about platform section (top) vs. platform dashboard (bottom)",
+    alt: "Old Twig website 'What You Learn' section with four topic cards, compared with the dashboard's games and modules",
+    notes: [
+      { x: 1.5, y: 19, title: "Recognition Rather Than Recall", body: "Users lose context moving from site to platform dashboard. No relation between what they are seeing on the website and what they expect on the dashboard." },
+    ],
+    thoughts: [],
+  },
+];
+
+const ideation = [
+  { finding: "Users are unable to understand the relation between key products", action: "Establish the relationship between landing and product page", idea: "Design a product section for the landing page in relation with dashboard features" },
+  { finding: "Intuitive navigation for smooth user experience", action: "Trade-off between number of features or content vs clarity", idea: "Clean dashboard for intuitive navigation across the platform. Optimisation and prioritisation of necessary features" },
+  { finding: "Consistency across all the pages", action: "Trade-off between number of features or content vs clarity", idea: "Clean dashboard for intuitive navigation across the platform. Optimisation and prioritisation of necessary features" },
+];
+
+const principles = [
+  { k: "Entry", v: "Carry users from the marketing site into the platform without losing context." },
+  { k: "Navigation", v: "Help students always know where they are and what to do next inside the platform." },
+  { k: "Consistency", v: "Platform needs clear navigation and consistent patterns across all interfaces." },
+];
+
+const dashboardNotes = [
+  { x: 8.9, y: 16.9, title: "Navigation", body: "Featuring dashboard and key products tab for smooth navigation." },
+  { x: 23.4, y: 41.3, title: "Suggestion of task", body: "For the student to achieve daily goals and build a habit, showing progress to continue the task from the previous session." },
+  { x: 23.4, y: 79.9, title: "Suggestion for other mini interactive lessons and games", body: "" },
+  { x: 92.3, y: 16.9, title: "Rewards!", body: "Showing the rewards and daily streak for motivation on all pages." },
+  { x: 91.6, y: 69.2, title: "Business oriented", body: "Push users to explore ongoing events." },
+];
+
+const learnings = [
+  "Working in collaboration with stakeholders (product managers, developers, and user research team).",
+  "Working with constraints such as brand guidelines, design systems, and time limitations while aligning with various stakeholders' vision.",
+  "Constraints and trade-offs between product features and user needs with business goals in mind.",
+  "Enhanced user research and UI skills. Took part in the user research to understand user behaviour & got insightful feedback for UI iterations.",
+  "Understanding the importance of creating an experience that impacts both users and the business needs positively.",
+];
+---
+<Base
+  title="Twig Labs — Priyank Savaliya"
+  description="Redesigning an Ed-tech platform to improve usability for school students."
+  theme="theme-twig"
+  image="/images/twig/cover-mockup.webp"
+>
+  <!-- Cover: recreated from the Figma cover slide -->
+  <section class="cover">
+    <div class="cover-lines" aria-hidden="true">
+      <span class="h h1"></span><span class="h h2"></span><span class="v v1"></span>
+      <span class="dot d1"></span><span class="dot d2"></span>
+    </div>
+    <div class="wrap cover-grid">
+      <div class="cover-text">
+        <img class="logo" src="/images/twig/twig-logo.png" alt="Twig" width="106" height="40" />
+        <p class="kicker">Twig Labs</p>
+        <h1>Redesigning an <b>Ed-tech</b> platform to improve usability for school students</h1>
+        <p class="chip">Role: Design Intern <span>|</span> Duration: 2 months <span>|</span> UX Research · UI Design · Ed-tech B2C</p>
+      </div>
+      <div class="cover-shot">
+        <img src={img("cover-mockup")} alt="Redesigned Twig student dashboard" width="838" height="558" />
+      </div>
+    </div>
+  </section>
+
+  <Section id="intro" eyebrow="introduction" title="Twig Labs">
+    <p class="lead">Twig Labs is building a gamified learning platform that turns financial skills into a fun, personalised journey for youth. It is a forward-thinking Ed-tech platform designed to transform financial literacy into an engaging journey for young learners.</p>
+    <div class="products">
+      {products.map((p) => (
+        <article class="product" style={`--p-bg:${p.bg};--p-btn:${p.btn};--p-border:${p.border}`}>
+          <span class="rings" aria-hidden="true"></span>
+          <span class="blob" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={icons[p.icon]} />
+          </span>
+          <h3>{p.title}</h3>
+          <p>{p.body}</p>
+          <span class="p-btn">{p.cta}</span>
+        </article>
+      ))}
+    </div>
+    <p class="caption">key products of the platform (design section for the landing page)</p>
+  </Section>
+
+  <Section id="audit" eyebrow="audit of existing product" title="Audit">
+    <p class="lead">I evaluated the existing dashboard, library and website against usability heuristics, and noted down what a student would be thinking while using each screen.</p>
+    {audits.map((a) => (
+      <div class="audit-block">
+        <Annotated src={a.src} alt={a.alt} width={a.w} height={a.h} notes={a.notes} caption={a.caption} />
+        {a.thoughts.length > 0 && (
+          <div class="thinking">
+            <p class="thinking-label">Thinking out loud</p>
+            <ul>{a.thoughts.map((t) => <li>{t}</li>)}</ul>
+          </div>
+        )}
+      </div>
+    ))}
+  </Section>
+
+  <Section id="problem" eyebrow="framing the gaps" title="Problem Statement">
+    <blockquote class="hmw">
+      <span class="q" aria-hidden="true">“</span>
+      How might we help students and their parents to trust and navigate Twig from the first visit on the website to the dashboard inside the platform, so that it feels like one consistent journey rather than two disconnected products?
+    </blockquote>
+  </Section>
+
+  <Section id="journey" eyebrow="identifying pain points and opportunities" title="Journey Mapping & Analysis">
+    <Figure src={img("journey-map")} alt="User journey map across Explore, Account, Dashboard and XP & Rewards — user actions, goals, feelings, pain points and opportunities" width={1224} height={805} />
+  </Section>
+
+  <Section id="benchmarking" eyebrow="competitor analysis" title="Benchmarking">
+    <div class="split">
+      <div class="bench-text">
+        <h3>Goal</h3>
+        <p>To understand the information architecture & structure of the landing page across different Ed-tech platforms, and how they are managing the navigation between multiple products and large amounts of content.</p>
+        <h3>Insights</h3>
+        <ul class="ticks">
+          <li>Relevance between landing page (website) and dashboard (platform)</li>
+          <li>Trade-off between number of features or content vs clarity for navigation across the platform</li>
+          <li>Consistency across the pages of the platform, smooth and intuitive experience</li>
+        </ul>
+      </div>
+      <Figure src={img("benchmarking")} alt="Board of competitor ed-tech platform screenshots collected for benchmarking" width={1158} height={872} />
+    </div>
+  </Section>
+
+  <Section id="ideation" eyebrow="connecting all research insights together" title="Brainstorming & Ideation">
+    <div class="table-wrap" role="region" aria-label="Findings, actions and brainstorming" tabindex="0">
+      <table class="idea-table">
+        <thead><tr><th>Major findings</th><th>Action to make</th><th>Brainstorming</th></tr></thead>
+        <tbody>
+          {ideation.map((r) => <tr><td>{r.finding}</td><td>{r.action}</td><td>{r.idea}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <div class="principles">
+      {principles.map((p, i) => (
+        <div class="principle">
+          <span class="p-num">0{i + 1}</span>
+          <h3>{p.k}</h3>
+          <p>{p.v}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section id="dashboard" eyebrow="solution version 1" title="Dashboard">
+    <Annotated src={img("dashboard-final")} alt="Revamped Twig dashboard with side navigation, today's mission, rewards, leaderboard and upcoming workshops" width={1096} height={746} notes={dashboardNotes} caption="revamped dashboard design" variant="plain" />
+    <div class="popup-row">
+      <img src={img("premium-popup")} alt="Pop-up: Unlock all learning with premium — access to 100+ lessons, AI coach, portfolio, progress tracking; try 1 week for free" width="240" height="246" loading="lazy" />
+      <p class="caption">premium upgrade pop-up</p>
+    </div>
+  </Section>
+
+  <Section id="game" eyebrow="connecting aspirations to tangible platform" title="Game Dashboard">
+    <div class="two-up">
+      <Figure src={img("game-page")} alt="Game page with an isometric city level map, daily earnings, portfolio chart and popular mini games" width={856} height={732} caption="game page design" />
+      <Figure src={img("library-page")} alt="Redesigned library page with filters, learning path and lesson cards grouped into Finance and Savings" width={856} height={672} caption="library page re-design" />
+    </div>
+  </Section>
+
+  <Section id="iterations" eyebrow="trade off between features and clean navigation" title="Iterations">
+    <div class="iter">
+      <div class="iter-item rejected">
+        <Figure src={img("iteration-v1")} alt="Dashboard iteration v1 with workshops, learning path, premium card and leaderboard" width={856} height={517} caption="dashboard iteration v1" />
+        <p class="verdict"><span>Rejected</span> and iterated again, as it was heavily loaded with text and features. Might be overwhelming for new users.</p>
+      </div>
+      <div class="iter-item">
+        <Figure src={img("iteration-v2")} alt="Dashboard iteration v2 with a list-style learning path: learn, play, take assessment, review portfolio" width={856} height={516} caption="dashboard iteration v2" />
+      </div>
+    </div>
+  </Section>
+
+  <Section id="learnings" eyebrow="key takeaways @ Twig Labs" title="Learnings">
+    <div class="learnings">
+      {learnings.map((l) => <div class="learning"><p>{l}</p></div>)}
+    </div>
+  </Section>
+
+  <nav class="wrap next" aria-label="More work">
+    <a href="/#work">← All work</a>
+  </nav>
+</Base>
+
+<style>
+  /* ---------- Cover ---------- */
+  .cover { position: relative; overflow: hidden; background: var(--accent-tint); padding: clamp(40px, 7vw, 88px) 0 clamp(48px, 8vw, 104px); }
+  .cover::before { content: ""; position: absolute; left: 0; right: 0; top: 28%; height: 43%; background: rgba(243, 130, 31, 0.08); }
+  .cover-lines { position: absolute; inset: 0; pointer-events: none; }
+  .cover-lines .h { position: absolute; left: 0; right: 0; border-top: 1.5px dashed #a8a29e; }
+  .cover-lines .h1 { top: 28%; } .cover-lines .h2 { top: 71%; }
+  .cover-lines .v1 { position: absolute; top: 0; bottom: 0; left: max(calc((100vw - var(--max)) / 2 + var(--gutter) - 28px), 10px); border-left: 1.5px dashed #a8a29e; }
+  .cover-lines .dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #64748b; left: max(calc((100vw - var(--max)) / 2 + var(--gutter) - 35px), 3px); transform: translateY(-50%); }
+  .cover-lines .d1 { top: 28%; } .cover-lines .d2 { top: 71%; }
+  .cover-grid { position: relative; display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
+  .logo { width: 106px; height: auto; margin-bottom: clamp(48px, 8vw, 96px); }
+  .kicker { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem); font-style: italic; font-weight: 300; color: var(--accent); letter-spacing: 0.02em; line-height: 1.2; }
+  .cover h1 { font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.7rem); font-weight: 300; color: #64748b; margin-top: 14px; line-height: 1.2; }
+  .cover h1 b { font-weight: 600; }
+  .chip { display: inline-block; margin-top: 28px; background: #fff; border-radius: 6px; padding: 8px 12px; font-size: var(--fs-sm); color: #334155; box-shadow: 0 0 16px rgba(0,0,0,.12); }
+  .chip span { color: #cbd5e1; margin: 0 4px; }
+  .cover-shot img { width: 100%; border-radius: 10px; }
+
+  /* ---------- Shared ---------- */
+  .lead { font-size: var(--fs-lg); color: var(--ink-soft); max-width: 70ch; line-height: 1.6; }
+  .caption { font-style: italic; font-weight: 300; color: var(--muted); }
+
+  /* ---------- Products ---------- */
+  .products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
+  .product {
+    position: relative; overflow: hidden; background: var(--p-bg); color: #fff;
+    border-radius: 24px; padding: 76px 18px 18px; display: flex; flex-direction: column; gap: 10px; min-height: 380px;
+    transition: transform .3s ease;
+  }
+  .product:hover { transform: translateY(-4px) rotate(-0.4deg); }
+  .rings { position: absolute; right: -36px; top: -36px; width: 125px; height: 125px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.35); box-shadow: 0 0 0 12px var(--p-bg), 0 0 0 14px rgba(255,255,255,.3), inset 0 0 0 12px var(--p-bg), inset 0 0 0 14px rgba(255,255,255,.3); }
+  .blob { position: absolute; top: 24px; left: 18px; width: 72px; height: 72px; display: grid; place-items: center;
+    background: color-mix(in srgb, #fff 55%, var(--p-bg)); color: color-mix(in srgb, #000 55%, var(--p-bg));
+    border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%; }
+  .product h3 { font-size: 1.35rem; margin-top: 36px; line-height: 1.05; }
+  .product p { font-size: 0.9rem; color: #f6ecf7; line-height: 1.45; flex: 1; }
+  .p-btn { display: block; text-align: center; border-radius: 20px; padding: 6px 12px; font-size: 0.85rem; font-weight: 500;
+    background: var(--p-btn); border: 1px solid var(--p-border); box-shadow: inset 0 -2px 1px rgba(0,0,0,.25); }
+
+  /* ---------- Audit ---------- */
+  .audit-block { display: grid; gap: 20px; padding-bottom: clamp(24px, 4vw, 48px); border-bottom: 1px dashed var(--line-strong); }
+  .audit-block:last-child { border-bottom: 0; padding-bottom: 0; }
+  .thinking { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px 20px; max-width: 760px; box-shadow: var(--shadow); }
+  .thinking-label { font-weight: 600; margin-bottom: 6px; }
+  .thinking ul { margin: 0; padding-left: 20px; color: var(--ink-soft); display: grid; gap: 4px; }
+
+  /* ---------- Problem ---------- */
+  .hmw { position: relative; margin: 0; background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--accent);
+    border-radius: var(--radius); padding: clamp(24px, 4vw, 48px) clamp(24px, 5vw, 64px); font-size: clamp(1.2rem, 1rem + 1vw, 1.9rem); line-height: 1.4; font-weight: 400; }
+  .hmw .q { position: absolute; left: 14px; top: -14px; font-size: 5rem; color: var(--accent); opacity: .25; line-height: 1; }
+
+  /* ---------- Benchmarking ---------- */
+  .split { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .bench-text { display: grid; gap: 10px; }
+  .bench-text h3 { font-size: var(--fs-lg); margin-top: 10px; }
+  .bench-text p { color: var(--ink-soft); }
+  .ticks { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; color: var(--ink-soft); }
+  .ticks li { padding-left: 26px; position: relative; }
+  .ticks li::before { content: ""; position: absolute; left: 0; top: .55em; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--accent); }
+
+  /* ---------- Ideation ---------- */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
+  .idea-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  .idea-table th { text-align: left; background: var(--accent); color: #fff; font-weight: 600; padding: 14px 18px; font-size: var(--fs-md); }
+  .idea-table td { padding: 16px 18px; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+  .idea-table td:last-child { width: 46%; }
+  .principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+  .principle { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+  .p-num { font-size: var(--fs-sm); color: var(--accent); font-weight: 700; }
+  .principle h3 { font-size: var(--fs-xl); margin: 6px 0 8px; }
+  .principle p { color: var(--ink-soft); }
+
+  /* ---------- Dashboard ---------- */
+  .popup-row { display: flex; align-items: flex-end; gap: 16px; }
+  .popup-row img { width: 220px; border-radius: 10px; box-shadow: var(--shadow); }
+
+  /* ---------- Game ---------- */
+  .two-up { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); align-items: start; }
+
+  /* ---------- Iterations ---------- */
+  .iter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); align-items: start; }
+  .iter-item { display: grid; gap: 14px; }
+  .verdict { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; color: var(--ink-soft); }
+  .verdict span { color: #b91c1c; font-weight: 600; }
+  .rejected :global(img) { filter: grayscale(.35); }
+
+  /* ---------- Learnings ---------- */
+  .learnings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+  .learning { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+  .learning p { color: var(--ink-soft); }
+
+  .next { padding-top: 72px; }
+  .next a { text-decoration: none; font-weight: 600; color: var(--accent-ink); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .learnings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 820px) {
+    .cover-grid, .split, .two-up, .iter, .principles { grid-template-columns: 1fr; }
+    .logo { margin-bottom: 32px; }
+    .cover-lines, .cover::before { display: none; }
+  }
+  @media (max-width: 560px) {
+    .products, .learnings { grid-template-columns: 1fr; }
+    .product { min-height: 0; }
+  }
+</style>

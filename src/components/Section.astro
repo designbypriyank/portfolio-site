@@ -1,0 +1,18 @@
+---
+interface Props { id?: string; eyebrow?: string; title: string; }
+const { id, eyebrow, title } = Astro.props;
+---
+<section id={id} class="cs-section wrap reveal">
+  <header>
+    {eyebrow && <p class="eyebrow">~{eyebrow}~</p>}
+    <h2>{title}</h2>
+  </header>
+  <div class="cs-body"><slot /></div>
+</section>
+
+<style>
+  .cs-section { padding-top: clamp(64px, 9vw, 120px); }
+  header { margin-bottom: clamp(20px, 3vw, 36px); }
+  h2 { font-size: var(--fs-2xl); color: var(--accent); margin-top: 6px; }
+  .cs-body { display: grid; gap: clamp(20px, 3vw, 32px); }
+</style>
