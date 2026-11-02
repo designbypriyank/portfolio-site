@@ -1,0 +1,194 @@
+---
+/**
+ * Recreates an annotated Figma slide: screens + dashed boxes + dashed arrows + notes.
+ * All coordinates are in the Figma slide's pixel space; `frame` is the region shown.
+ * Wide screens: exact composition (scales as one unit, dash 8/8 @ 2px like Figma).
+ * Narrow screens: stacked — screen with dashed boxes + numbered markers, notes below.
+ */
+type Pt = [number, number];
+interface Img { src: string; alt: string; x: number; y: number; w: number; h: number; caption?: string; bare?: boolean; }
+interface Box { x: number; y: number; w: number; h: number; }
+interface Arrow { points: Pt[]; head?: "start" | "end" | "none"; }
+interface Note { style: "sticky" | "card" | "thought"; x: number; y: number; w: number; h: number; marker?: Pt; title?: string; body?: string; bullets?: string[]; afterImage?: number; }
+interface Caption { x: number; y: number; text: string; }
+interface Props {
+  frame: { x: number; y: number; w: number; h: number };
+  images: Img[]; boxes?: Box[]; arrows?: Arrow[]; notes?: Note[]; captions?: Caption[];
+  color?: "red" | "grey"; label?: string; stackImages?: boolean;
+}
+const { frame, images, boxes = [], arrows = [], notes = [], captions = [], color = "red", label, stackImages = false } = Astro.props;
+const stroke = color === "red" ? "#f00000" : "#a7b5c6";
+const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(4)}%`;
+const fx = (x: number) => x - frame.x;
+const fy = (y: number) => y - frame.y;
+
+// Arrow geometry: dashed shaft drawn tail→head (matches Figma's dash phase), solid open chevron head.
+const ARM = 7;
+function arrowShaft(a: Arrow) {
+  const pts = a.head === "start" ? [...a.points].reverse() : a.points;
+  return "M " + pts.map(([x, y]) => `${fx(x)} ${fy(y)}`).join(" L ");
+}
+function arrowHead(a: Arrow) {
+  if (!a.head || a.head === "none") return null;
+  const [p, q] = a.head === "start" ? [a.points[0], a.points[1]] : [a.points[a.points.length - 1], a.points[a.points.length - 2]];
+  const dx = p[0] - q[0], dy = p[1] - q[1], len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+  const P = [fx(p[0]), fy(p[1])];
+  const a1 = [P[0] - ARM * ux + ARM * nx, P[1] - ARM * uy + ARM * ny];
+  const a2 = [P[0] - ARM * ux - ARM * nx, P[1] - ARM * uy - ARM * ny];
+  return `M ${a1[0]} ${a1[1]} L ${P[0]} ${P[1]} L ${a2[0]} ${a2[1]}`;
+}
+
+// Numbered markers (stacked view) — notes that point at something.
+const numbered = notes.filter((n) => n.marker);
+const numberOf = (n: Note) => numbered.indexOf(n) + 1;
+
+// Stage for stacked view = union of images + boxes.
+const ux0 = Math.min(...images.map((i) => i.x), ...boxes.map((b) => b.x)) - 4;
+const uy0 = Math.min(...images.map((i) => i.y), ...boxes.map((b) => b.y)) - 4;
+const ux1 = Math.max(...images.filter((i) => !i.bare).map((i) => i.x + i.w), ...boxes.map((b) => b.x + b.w)) + 4;
+const uy1 = Math.max(...images.filter((i) => !i.bare).map((i) => i.y + i.h), ...boxes.map((b) => b.y + b.h)) + 4;
+const stage = { x: ux0, y: uy0, w: ux1 - ux0, h: uy1 - uy0 };
+const stageImgs = images.filter((i) => !i.bare);
+const bareImgs = images.filter((i) => i.bare);
+---
+<div class="anno-wrap" data-color={color}>
+  {label && <h3 class="anno-label">{label}</h3>}
+
+  <!-- Wide: exact composition -->
+  <div class="full" style={`aspect-ratio:${frame.w}/${frame.h};--fw:${frame.w}`} aria-hidden="false">
+    {images.map((i) => (
+      <img class:list={["shot", { bare: i.bare }]} src={i.src} alt={i.alt} loading="lazy" decoding="async"
+        width={i.w} height={i.h}
+        style={`left:${pct(fx(i.x), frame.w)};top:${pct(fy(i.y), frame.h)};width:${pct(i.w, frame.w)}`} />
+    ))}
+    <svg class="lines" viewBox={`0 0 ${frame.w} ${frame.h}`} preserveAspectRatio="none" aria-hidden="true">
+      <g fill="none" stroke={stroke} stroke-width="2" stroke-dasharray="8 8" stroke-linecap="butt" stroke-linejoin="miter">
+        {boxes.map((b) => <rect x={fx(b.x) + 1} y={fy(b.y) + 1} width={b.w - 2} height={b.h - 2} rx="4" />)}
+        {arrows.map((a) => <path d={arrowShaft(a)} />)}
+      </g>
+      <g fill="none" stroke={stroke} stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter">
+        {arrows.map((a) => { const d = arrowHead(a); return d && <path d={d} />; })}
+      </g>
+    </svg>
+    {notes.map((n) => (
+      <div class:list={["note", n.style]} style={`left:${pct(fx(n.x), frame.w)};top:${pct(fy(n.y), frame.h)};width:${pct(n.w, frame.w)};min-height:${pct(n.h, frame.h)}`}>
+        {n.title && <strong>{n.title}</strong>}
+        {n.body && <p>{n.body}</p>}
+        {n.bullets && <ul>{n.bullets.map((b) => <li>{b}</li>)}</ul>}
+      </div>
+    ))}
+    {captions.map((c) => (
+      <p class="cap" style={`left:${pct(fx(c.x), frame.w)};top:${pct(fy(c.y), frame.h)}`}>{c.text}</p>
+    ))}
+  </div>
+
+  <!-- Narrow: stacked -->
+  <div class="stacked">
+    {stackImages ? (
+      images.map((i, idx) => (
+        <>
+          <figure class="st-fig">
+            <img src={i.src} alt={i.alt} width={i.w} height={i.h} loading="lazy" decoding="async" />
+            {i.caption && <figcaption>{i.caption}</figcaption>}
+          </figure>
+          {notes.filter((n) => n.afterImage === idx).map((n) => (
+            <div class:list={["st-note", n.style]}>{n.title && <strong>{n.title}</strong>}{n.body && <p>{n.body}</p>}</div>
+          ))}
+        </>
+      ))
+    ) : (
+      <>
+        <figure class="st-fig">
+          <div class="st-stage" style={`aspect-ratio:${stage.w}/${stage.h}`}>
+            {stageImgs.map((i) => (
+              <img src={i.src} alt={i.alt} width={i.w} height={i.h} loading="lazy" decoding="async"
+                style={`left:${pct(i.x - stage.x, stage.w)};top:${pct(i.y - stage.y, stage.h)};width:${pct(i.w, stage.w)}`} />
+            ))}
+            <svg class="lines" viewBox={`0 0 ${stage.w} ${stage.h}`} preserveAspectRatio="none" aria-hidden="true">
+              <g fill="none" stroke={stroke} stroke-width="2" stroke-dasharray="8 8" vector-effect="non-scaling-stroke">
+                {boxes.map((b) => <rect x={b.x - stage.x + 1} y={b.y - stage.y + 1} width={b.w - 2} height={b.h - 2} rx="4" vector-effect="non-scaling-stroke" />)}
+              </g>
+            </svg>
+            {numbered.map((n) => (
+              <span class="marker" style={`left:${pct(n.marker![0] - stage.x, stage.w)};top:${pct(n.marker![1] - stage.y, stage.h)}`}>{numberOf(n)}</span>
+            ))}
+          </div>
+          {captions[0] && <figcaption>{captions[0].text}</figcaption>}
+        </figure>
+        {bareImgs.map((i) => <img class="st-bare" src={i.src} alt={i.alt} width={i.w} height={i.h} loading="lazy" />)}
+        <ol class="st-notes">
+          {notes.map((n) => (
+            <li class:list={["st-note", n.style]}>
+              {n.marker && <span class="num">{numberOf(n)}</span>}
+              <div>
+                {n.title && <strong>{n.title}</strong>}
+                {n.body && <p>{n.body}</p>}
+                {n.bullets && <ul>{n.bullets.map((b) => <li>{b}</li>)}</ul>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </>
+    )}
+  </div>
+</div>
+
+<style>
+  .anno-wrap { container-type: inline-size; }
+  .anno-label { font-size: var(--fs-sm); font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 14px; }
+
+  /* ---------- Wide composition ---------- */
+  .full { display: none; position: relative; width: 100%; --s: calc(100cqw / var(--fw)); }
+  .shot { position: absolute; height: auto; border-radius: calc(6 * var(--s)); box-shadow: 0 0 calc(36 * var(--s)) rgba(0,0,0,.08); background: #fff; }
+  .shot.bare { box-shadow: none; background: transparent; border-radius: 0; }
+  .lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+
+  .note { position: absolute; color: var(--ink); line-height: 1.4; }
+  .note strong { display: block; font-weight: 600; }
+  .note p, .note li { color: var(--ink-soft); }
+  .note.sticky {
+    background: #fce5ad; padding: calc(18.65 * var(--s));
+    font-size: max(12px, calc(16 * var(--s)));
+    box-shadow: 0 calc(2 * var(--s)) calc(6 * var(--s)) rgba(0,0,0,.12);
+  }
+  .note.card, .note.thought {
+    background: #fff; border-radius: calc(6 * var(--s)); padding: calc(8 * var(--s)) calc(16 * var(--s));
+    font-size: max(12.5px, calc(20 * var(--s)));
+    box-shadow: 0 0 calc(32 * var(--s)) calc(4 * var(--s)) rgba(0,0,0,.08);
+  }
+  .note.card strong { color: var(--ink); font-weight: 500; }
+  .note.thought strong { font-weight: 500; }
+  .note ul { margin: 0; padding-left: 1.2em; }
+  .cap { position: absolute; margin: 0; font-style: italic; font-weight: 300; color: var(--muted); font-size: max(12px, calc(20 * var(--s))); white-space: nowrap; }
+
+  /* ---------- Stacked ---------- */
+  .stacked { display: grid; gap: 16px; }
+  .st-fig { margin: 0; }
+  .st-fig img { border-radius: 6px; box-shadow: var(--shadow); background: #fff; }
+  .st-fig figcaption { margin-top: 10px; font-style: italic; font-weight: 300; color: var(--muted); }
+  .st-stage { position: relative; }
+  .st-stage img { position: absolute; height: auto; border-radius: 4px; box-shadow: var(--shadow); }
+  .marker {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+    font: 700 12px/1 var(--font-sans); color: #fff; background: #f00000; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  [data-color="grey"] .marker { background: #64748b; }
+  .st-bare { width: min(256px, 70%); }
+  .st-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .st-note { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 14px 16px; border-radius: 6px; font-size: var(--fs-sm); line-height: 1.5; }
+  .st-note.sticky { background: #fce5ad; border-radius: 2px; }
+  .st-note.card, .st-note.thought { background: #fff; box-shadow: 0 0 24px rgba(0,0,0,.08); }
+  .st-note.thought, .st-note:not(:has(.num)) { grid-template-columns: 1fr; }
+  .st-note strong { display: block; font-weight: 600; color: var(--ink); }
+  .st-note p, .st-note li { color: var(--ink-soft); }
+  .st-note ul { margin: 4px 0 0; padding-left: 1.2em; }
+  .num { width: 22px; height: 22px; border-radius: 50%; background: #f00000; color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  [data-color="grey"] .num { background: #64748b; }
+
+  @container (min-width: 980px) {
+    .full { display: block; }
+    .stacked { display: none; }
+  }
+</style>

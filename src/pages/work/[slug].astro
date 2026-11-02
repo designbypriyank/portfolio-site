@@ -1,0 +1,127 @@
+---
+import Base from "../../layouts/Base.astro";
+import Annotated from "../../components/blocks/Annotated.astro";
+import Products from "../../components/blocks/Products.astro";
+import Simple from "../../components/blocks/Simple.astro";
+
+export async function getStaticPaths() {
+  const files = import.meta.glob("../../content/projects/*.json", { eager: true });
+  return Object.values(files)
+    .map((m: any) => m.default)
+    .filter((p: any) => !p.draft)
+    .map((p: any) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project: p } = Astro.props as { project: any };
+const wideTypes = new Set(["annotated", "products"]);
+const textTypes = new Set(["text", "quote"]);
+---
+<Base title={p.seo?.title ?? p.title} description={p.seo?.description} theme={p.theme} image={p.cover?.image?.src}>
+  <article class="cs">
+    <!-- Cover -->
+    <header class="cover">
+      <div class="col">
+        {p.cover.logo && <img class="logo" src={p.cover.logo} alt={p.title} width="106" height="40" />}
+        <p class="label">{p.cover.kicker}</p>
+        <h1>{p.cover.title}</h1>
+        <dl class="meta">
+          {p.cover.meta.map((m: any) => (
+            <div><dt>{m.label}</dt><dd>{m.value}</dd></div>
+          ))}
+        </dl>
+      </div>
+      <div class="wide cover-shot">
+        <img src={p.cover.image.src} alt={p.cover.image.alt} width={p.cover.image.width} height={p.cover.image.height} fetchpriority="high" />
+      </div>
+    </header>
+
+    <!-- Sections -->
+    {p.sections.map((s: any) => (
+      <section id={s.id} class="cs-section" data-rail={s.title}>
+        <div class="col sec-head reveal">
+          {s.eyebrow && <p class="label">{s.eyebrow}</p>}
+          <h2>{s.title}</h2>
+        </div>
+        <div class="sec-body">
+          {s.blocks.map((b: any) => (
+            <div class:list={["block reveal", wideTypes.has(b.type) ? "xwide" : textTypes.has(b.type) ? "col" : "wide"]}>
+              {b.type === "annotated" ? <Annotated {...b} />
+                : b.type === "products" ? <Products {...b} />
+                : <Simple block={b} />}
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <nav class="col back" aria-label="More work"><a href="/#work">← All work</a></nav>
+  </article>
+
+  <!-- Progress rail -->
+  <nav class="rail" aria-label="Case study sections">
+    <ol>
+      {p.sections.map((s: any) => (
+        <li><a href={`#${s.id}`} data-target={s.id}><span class="tick"></span><span class="txt">{s.title}</span></a></li>
+      ))}
+    </ol>
+  </nav>
+
+  <script>
+    const links = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>(".rail a").forEach((a) => links.set(a.dataset.target!, a));
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((a) => a.classList.remove("on"));
+          links.get(e.target.id)?.classList.add("on");
+        }
+      }
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    document.querySelectorAll("section.cs-section").forEach((s) => obs.observe(s));
+  </script>
+</Base>
+
+<style>
+  .col, .wide, .xwide { margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+  .col { max-width: calc(var(--col) + 2 * var(--gutter)); }
+  .wide { max-width: calc(var(--wide) + 2 * var(--gutter)); }
+  .xwide { max-width: calc(var(--xwide) + 2 * var(--gutter)); }
+
+  .label { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--muted); }
+
+  /* Cover */
+  .cover { padding-top: clamp(48px, 8vw, 104px); }
+  .logo { width: 96px; height: auto; margin-bottom: 40px; }
+  .cover h1 { font-size: var(--fs-hero); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 14px; color: var(--ink); }
+  .meta { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px clamp(24px, 5vw, 64px); margin: 36px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+  .meta dt { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--muted); }
+  .meta dd { margin: 6px 0 0; font-size: var(--fs-body); color: var(--ink); font-weight: 500; letter-spacing: -0.02em; }
+  .cover-shot { margin-top: clamp(40px, 6vw, 72px); }
+  .cover-shot img { width: 100%; border-radius: var(--radius-lg); background: var(--accent-tint); }
+
+  /* Sections */
+  .cs-section { padding-top: clamp(80px, 11vw, 144px); scroll-margin-top: 72px; }
+  .sec-head { margin-bottom: clamp(24px, 3.5vw, 40px); }
+  .sec-head h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 10px; color: var(--ink); }
+  .sec-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); }
+  .block { width: 100%; min-width: 0; }
+
+  .back { padding-top: 96px; }
+  .back a { text-decoration: none; font-weight: 600; color: var(--ink); }
+
+  /* Rail */
+  .rail { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 15; display: none; }
+  .rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; border-left: 1px solid var(--line-strong); }
+  .rail a { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 4px 0 4px 0; color: var(--muted); font-size: 12px; }
+  .rail .tick { width: 10px; height: 1px; background: var(--line-strong); margin-left: -1px; transition: width .25s ease, background .25s ease; }
+  .rail .txt { opacity: 0; transform: translateX(-4px); transition: opacity .25s ease, transform .25s ease; white-space: nowrap; }
+  .rail:hover .txt, .rail a.on .txt { opacity: 1; transform: none; }
+  .rail a.on { color: var(--ink); font-weight: 600; }
+  .rail a.on .tick { width: 18px; background: var(--accent); height: 2px; }
+  @media (min-width: 1720px) { .rail { display: block; } }
+
+  @media (max-width: 640px) {
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta div:last-child { grid-column: 1 / -1; }
+  }
+</style>

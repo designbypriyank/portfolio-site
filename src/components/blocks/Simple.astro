@@ -1,0 +1,102 @@
+---
+/** Small text-first blocks: text, quote, image, split, table, principles, learnings. */
+const { block } = Astro.props as { block: any };
+const b = block;
+---
+{b.type === "text" && <p class="b-text">{b.body}</p>}
+
+{b.type === "quote" && (
+  <blockquote class="b-quote"><p>{b.body}</p></blockquote>
+)}
+
+{b.type === "image" && (
+  <figure class="b-image">
+    <a href={b.src} target="_blank" rel="noopener" aria-label={`Open full size: ${b.alt}`}>
+      <img src={b.src} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async" />
+    </a>
+    {b.caption && <figcaption>{b.caption}</figcaption>}
+  </figure>
+)}
+
+{b.type === "split" && (
+  <div class="b-split">
+    <div class="b-split-text">
+      {b.groups.map((g: any) => (
+        <div>
+          <p class="mini-label">{g.heading}</p>
+          {g.body && <p class="b-text">{g.body}</p>}
+          {g.bullets && <ul class="ticks">{g.bullets.map((x: string) => <li>{x}</li>)}</ul>}
+        </div>
+      ))}
+    </div>
+    <figure class="b-image">
+      <a href={b.image.src} target="_blank" rel="noopener" aria-label={`Open full size: ${b.image.alt}`}>
+        <img src={b.image.src} alt={b.image.alt} width={b.image.width} height={b.image.height} loading="lazy" decoding="async" />
+      </a>
+    </figure>
+  </div>
+)}
+
+{b.type === "table" && (
+  <div class="b-table" role="region" aria-label={b.headers.join(", ")} tabindex="0">
+    <table>
+      <thead><tr>{b.headers.map((h: string) => <th>{h}</th>)}</tr></thead>
+      <tbody>{b.rows.map((r: string[]) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+    </table>
+  </div>
+)}
+
+{b.type === "principles" && (
+  <div class="b-principles">
+    {b.items.map((p: any) => (
+      <div class="principle"><h3>{p.title}</h3><p>{p.body}</p></div>
+    ))}
+  </div>
+)}
+
+{b.type === "learnings" && (
+  <div class="b-learnings">
+    {b.items.map((l: string) => <div class="learning"><p>{l}</p></div>)}
+  </div>
+)}
+
+<style>
+  .b-text { font-size: var(--fs-body); color: var(--ink-soft); line-height: 1.5; max-width: 72ch; letter-spacing: -0.02em; }
+
+  .b-quote { margin: 0; background: var(--panel); border-radius: var(--radius-lg); padding: clamp(28px, 5vw, 64px); }
+  .b-quote p { font-size: clamp(1.25rem, 1rem + 1.1vw, 2rem); line-height: 1.35; font-weight: 500; letter-spacing: -0.03em; color: var(--ink); max-width: 46ch; }
+
+  .b-image { margin: 0; background: var(--panel); border-radius: var(--radius-lg); padding: clamp(14px, 3vw, 40px); }
+  .b-image a { display: block; cursor: zoom-in; }
+  .b-image img { border-radius: 8px; box-shadow: var(--shadow); margin: 0 auto; }
+  .b-image figcaption { margin-top: 12px; font-style: italic; font-weight: 300; color: var(--muted); }
+
+  .b-split { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .b-split-text { display: grid; gap: 28px; }
+  .mini-label { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .ticks { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.5; letter-spacing: -0.02em; }
+  .ticks li { padding-left: 26px; position: relative; }
+  .ticks li::before { content: ""; position: absolute; left: 0; top: .5em; width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--accent); }
+
+  .b-table { overflow-x: auto; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; min-width: 640px; }
+  th { text-align: left; font-size: var(--fs-label); text-transform: uppercase; letter-spacing: var(--label-tracking); color: var(--muted); font-weight: 700; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+  td { padding: 18px 20px; vertical-align: top; color: var(--ink-soft); border-top: 1px solid var(--line); line-height: 1.5; }
+  tr:first-child td { border-top: 0; }
+  td:last-child { width: 44%; color: var(--ink); }
+
+  .b-principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2vw, 20px); }
+  .principle { background: var(--panel); border-radius: var(--radius); padding: 24px; }
+  .principle h3 { font-size: 1.375rem; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 8px; color: var(--ink); }
+  .principle p { color: var(--ink-soft); line-height: 1.5; }
+
+  .b-learnings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2vw, 20px); }
+  .learning { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .learning p { color: var(--ink-soft); line-height: 1.5; }
+
+  @media (max-width: 860px) {
+    .b-split, .b-principles { grid-template-columns: 1fr; }
+    .b-learnings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) { .b-learnings { grid-template-columns: 1fr; } }
+</style>
