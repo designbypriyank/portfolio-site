@@ -41,7 +41,7 @@ const b = block;
   <div class="b-table" role="region" aria-label={b.headers.join(", ")} tabindex="0">
     <table>
       <thead><tr>{b.headers.map((h: string) => <th>{h}</th>)}</tr></thead>
-      <tbody>{b.rows.map((r: string[]) => <tr>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody>
+      <tbody>{b.rows.map((r: any) => <tr>{(r.cells ?? r).map((c: string) => <td>{c}</td>)}</tr>)}</tbody>
     </table>
   </div>
 )}

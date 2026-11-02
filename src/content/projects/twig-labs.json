@@ -11,11 +11,25 @@
     "kicker": "Twig Labs",
     "title": "Redesigning an Ed-tech platform to improve usability for school students",
     "meta": [
-      { "label": "Role", "value": "Design Intern" },
-      { "label": "Duration", "value": "2 months" },
-      { "label": "Focus", "value": "UX Research · UI Design · Ed-tech B2C" }
+      {
+        "label": "Role",
+        "value": "Design Intern"
+      },
+      {
+        "label": "Duration",
+        "value": "2 months"
+      },
+      {
+        "label": "Focus",
+        "value": "UX Research · UI Design · Ed-tech B2C"
+      }
     ],
-    "image": { "src": "/images/twig/cover-mockup.webp", "alt": "Redesigned Twig student dashboard", "width": 838, "height": 558 }
+    "image": {
+      "src": "/images/twig/cover-mockup.webp",
+      "alt": "Redesigned Twig student dashboard",
+      "width": 838,
+      "height": 558
+    }
   },
   "sections": [
     {
@@ -27,13 +41,48 @@
           "type": "products",
           "caption": "key products of the platform (design section for the landing page)",
           "items": [
-            { "title": "Learn through stories and study", "body": "Children enjoy reading the stories and comics in Twig's structured library. Story-led, engaging, and comes with inbuilt assessment options.", "cta": "CBSE - Aligned Library", "color": "#f99244", "button": "#ffba92", "border": "#ad5707", "icon": "library" },
-            { "title": "Learn how money works in real life", "body": "Your child applies the learning from library to a life simulation game where they make money decisions - spending, saving, investing, and more without real-world risk.", "cta": "Life Simulation Game", "color": "#d96f4f", "button": "#d9a291", "border": "#82422f", "icon": "game" },
-            { "title": "Learn from experience", "body": "Their choices create visible outcomes. VED our personalised AI coach helps them understand their patterns and improve over time.", "cta": "Ved - Personal AI Coach", "color": "#c35e79", "button": "#e09aad", "border": "#ba2a50", "icon": "bot" },
-            { "title": "Learn through industry experts", "body": "Your child joins live, expert led workshops where Twig's content comes to life through guided discussions, quizzes, and activities that help them grasp money concepts with confidence.", "cta": "Expert - Led Workshop", "color": "#ba6abb", "button": "#c889cb", "border": "#7a2d78", "icon": "clipboard" }
+            {
+              "title": "Learn through stories and study",
+              "body": "Children enjoy reading the stories and comics in Twig's structured library. Story-led, engaging, and comes with inbuilt assessment options.",
+              "cta": "CBSE - Aligned Library",
+              "color": "#f99244",
+              "button": "#ffba92",
+              "border": "#ad5707",
+              "icon": "library"
+            },
+            {
+              "title": "Learn how money works in real life",
+              "body": "Your child applies the learning from library to a life simulation game where they make money decisions - spending, saving, investing, and more without real-world risk.",
+              "cta": "Life Simulation Game",
+              "color": "#d96f4f",
+              "button": "#d9a291",
+              "border": "#82422f",
+              "icon": "game"
+            },
+            {
+              "title": "Learn from experience",
+              "body": "Their choices create visible outcomes. VED our personalised AI coach helps them understand their patterns and improve over time.",
+              "cta": "Ved - Personal AI Coach",
+              "color": "#c35e79",
+              "button": "#e09aad",
+              "border": "#ba2a50",
+              "icon": "bot"
+            },
+            {
+              "title": "Learn through industry experts",
+              "body": "Your child joins live, expert led workshops where Twig's content comes to life through guided discussions, quizzes, and activities that help them grasp money concepts with confidence.",
+              "cta": "Expert - Led Workshop",
+              "color": "#ba6abb",
+              "button": "#c889cb",
+              "border": "#7a2d78",
+              "icon": "clipboard"
+            }
           ]
         },
-        { "type": "text", "body": "Twig Labs is building a gamified learning platform that turns financial skills into a fun, personalised journey for youth. It is a forward-thinking Ed-tech platform designed to transform financial literacy into an engaging journey for young learners." }
+        {
+          "type": "text",
+          "body": "Twig Labs is building a gamified learning platform that turns financial skills into a fun, personalised journey for youth. It is a forward-thinking Ed-tech platform designed to transform financial literacy into an engaging journey for young learners."
+        }
       ]
     },
     {
@@ -45,80 +94,415 @@
           "type": "annotated",
           "label": "Old dashboard",
           "color": "red",
-          "frame": { "x": 92, "y": 118, "w": 1736, "h": 890 },
+          "frame": {
+            "x": 92,
+            "y": 118,
+            "w": 1736,
+            "h": 890
+          },
           "images": [
-            { "src": "/images/twig/old-dashboard.webp", "alt": "Old Twig dashboard: welcome banner, streak bar, learning path, games and modules, footer navigation", "x": 448, "y": 224, "w": 1024, "h": 582 }
+            {
+              "src": "/images/twig/old-dashboard.webp",
+              "alt": "Old Twig dashboard: welcome banner, streak bar, learning path, games and modules, footer navigation",
+              "x": 448,
+              "y": 224,
+              "w": 1024,
+              "h": 582
+            }
           ],
           "boxes": [
-            { "x": 670, "y": 262, "w": 562, "h": 62 },
-            { "x": 459, "y": 422, "w": 186, "h": 186 },
-            { "x": 1242, "y": 218, "w": 194, "h": 62 },
-            { "x": 676, "y": 406, "w": 807, "h": 250 },
-            { "x": 710, "y": 585, "w": 210, "h": 46 },
-            { "x": 437, "y": 747, "w": 1045, "h": 64 }
+            {
+              "x": 670,
+              "y": 262,
+              "w": 562,
+              "h": 62
+            },
+            {
+              "x": 459,
+              "y": 422,
+              "w": 186,
+              "h": 186
+            },
+            {
+              "x": 1242,
+              "y": 218,
+              "w": 194,
+              "h": 62
+            },
+            {
+              "x": 676,
+              "y": 406,
+              "w": 807,
+              "h": 250
+            },
+            {
+              "x": 710,
+              "y": 585,
+              "w": 210,
+              "h": 46
+            },
+            {
+              "x": 437,
+              "y": 747,
+              "w": 1045,
+              "h": 64
+            }
           ],
           "arrows": [
-            { "points": [[362, 293], [670, 293]], "head": "start" },
-            { "points": [[362, 515], [459, 515]], "head": "start" },
-            { "points": [[1580, 252], [1436, 252]], "head": "start" },
-            { "points": [[1580, 531], [1483, 531]], "head": "start" },
-            { "points": [[1580, 779], [1482, 779]], "head": "start" }
+            {
+              "points": [
+                {
+                  "x": 362,
+                  "y": 293
+                },
+                {
+                  "x": 670,
+                  "y": 293
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 362,
+                  "y": 515
+                },
+                {
+                  "x": 459,
+                  "y": 515
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1580,
+                  "y": 252
+                },
+                {
+                  "x": 1436,
+                  "y": 252
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1580,
+                  "y": 531
+                },
+                {
+                  "x": 1483,
+                  "y": 531
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1580,
+                  "y": 779
+                },
+                {
+                  "x": 1482,
+                  "y": 779
+                }
+              ],
+              "head": "start"
+            }
           ],
           "notes": [
-            { "style": "sticky", "x": 92, "y": 224, "w": 224, "h": 224, "marker": [670, 262], "title": "Match Between the System & the Real World", "body": "Lack of personalisation for user as it uses details from mail automatically and shows the roll number" },
-            { "style": "sticky", "x": 92, "y": 480, "w": 224, "h": 229, "marker": [459, 422], "title": "Recognition Rather Than Recall", "body": "Lack of clarity — title not reflecting the actual steps to follow, instead showing only different library" },
-            { "style": "sticky", "x": 1604, "y": 118, "w": 224, "h": 298, "marker": [1242, 218], "title": "User control & freedom", "body": "Only highlighting CTA in the entire screen is logout. It fails to provide immediate control actions to users over their primary workspace — trapping them into leaving rather than managing" },
-            { "style": "sticky", "x": 1604, "y": 448, "w": 224, "h": 224, "marker": [676, 406], "title": "Aesthetic & Minimalist Design", "body": "Image grabbing more visual attention and hard for users to find the CTA in the image" },
-            { "style": "sticky", "x": 1604, "y": 704, "w": 224, "h": 224, "marker": [437, 747], "title": "Consistency & Standards", "body": "Position of navigation tab is not intuitive for users and lack of consistency across pages" },
-            { "style": "thought", "x": 447, "y": 880, "w": 505, "h": 128, "title": "Thinking out loud:", "bullets": ["what should I do first? visit library or play game.", "where can I see my progress and see where I left last time?"] },
-            { "style": "thought", "x": 977, "y": 880, "w": 505, "h": 128, "bullets": ["what will be today's task? what are the rewards for completing the task? where can I find it?", "where can I find my streaks and reward XP points?"] }
+            {
+              "style": "sticky",
+              "x": 92,
+              "y": 224,
+              "w": 224,
+              "h": 224,
+              "title": "Match Between the System & the Real World",
+              "body": "Lack of personalisation for user as it uses details from mail automatically and shows the roll number",
+              "markerX": 670,
+              "markerY": 262
+            },
+            {
+              "style": "sticky",
+              "x": 92,
+              "y": 480,
+              "w": 224,
+              "h": 229,
+              "title": "Recognition Rather Than Recall",
+              "body": "Lack of clarity — title not reflecting the actual steps to follow, instead showing only different library",
+              "markerX": 459,
+              "markerY": 422
+            },
+            {
+              "style": "sticky",
+              "x": 1604,
+              "y": 118,
+              "w": 224,
+              "h": 298,
+              "title": "User control & freedom",
+              "body": "Only highlighting CTA in the entire screen is logout. It fails to provide immediate control actions to users over their primary workspace — trapping them into leaving rather than managing",
+              "markerX": 1242,
+              "markerY": 218
+            },
+            {
+              "style": "sticky",
+              "x": 1604,
+              "y": 448,
+              "w": 224,
+              "h": 224,
+              "title": "Aesthetic & Minimalist Design",
+              "body": "Image grabbing more visual attention and hard for users to find the CTA in the image",
+              "markerX": 676,
+              "markerY": 406
+            },
+            {
+              "style": "sticky",
+              "x": 1604,
+              "y": 704,
+              "w": 224,
+              "h": 224,
+              "title": "Consistency & Standards",
+              "body": "Position of navigation tab is not intuitive for users and lack of consistency across pages",
+              "markerX": 437,
+              "markerY": 747
+            },
+            {
+              "style": "thought",
+              "x": 447,
+              "y": 880,
+              "w": 505,
+              "h": 128,
+              "title": "Thinking out loud:",
+              "bullets": [
+                "what should I do first? visit library or play game.",
+                "where can I see my progress and see where I left last time?"
+              ]
+            },
+            {
+              "style": "thought",
+              "x": 977,
+              "y": 880,
+              "w": 505,
+              "h": 128,
+              "bullets": [
+                "what will be today's task? what are the rewards for completing the task? where can I find it?",
+                "where can I find my streaks and reward XP points?"
+              ]
+            }
           ],
-          "captions": [{ "x": 448, "y": 826, "text": "old dashboard" }]
+          "captions": [
+            {
+              "x": 448,
+              "y": 826,
+              "text": "old dashboard"
+            }
+          ]
         },
         {
           "type": "annotated",
           "label": "Old library",
           "color": "red",
-          "frame": { "x": 92, "y": 134, "w": 1736, "h": 874 },
+          "frame": {
+            "x": 92,
+            "y": 134,
+            "w": 1736,
+            "h": 874
+          },
           "images": [
-            { "src": "/images/twig/old-library.webp", "alt": "Old Twig library page with a long curriculum sidebar and comic-style lesson content", "x": 448, "y": 224, "w": 1024, "h": 582 }
+            {
+              "src": "/images/twig/old-library.webp",
+              "alt": "Old Twig library page with a long curriculum sidebar and comic-style lesson content",
+              "x": 448,
+              "y": 224,
+              "w": 1024,
+              "h": 582
+            }
           ],
           "boxes": [
-            { "x": 437, "y": 300, "w": 193, "h": 346 },
-            { "x": 437, "y": 214, "w": 1045, "h": 64 }
+            {
+              "x": 437,
+              "y": 300,
+              "w": 193,
+              "h": 346
+            },
+            {
+              "x": 437,
+              "y": 214,
+              "w": 1045,
+              "h": 64
+            }
           ],
           "arrows": [
-            { "points": [[342, 481], [439, 481]], "head": "start" },
-            { "points": [[1579, 246], [1482, 246]], "head": "start" }
+            {
+              "points": [
+                {
+                  "x": 342,
+                  "y": 481
+                },
+                {
+                  "x": 439,
+                  "y": 481
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1579,
+                  "y": 246
+                },
+                {
+                  "x": 1482,
+                  "y": 246
+                }
+              ],
+              "head": "start"
+            }
           ],
           "notes": [
-            { "style": "sticky", "x": 92, "y": 385, "w": 224, "h": 275, "marker": [437, 300], "title": "Recognition Rather Than Recall", "body": "No visual feedback for the users to recognise, difficult to access the sub lessons and if the number increases it becomes hard for users to navigate across all the options" },
-            { "style": "sticky", "x": 1604, "y": 134, "w": 224, "h": 224, "marker": [437, 214], "title": "Consistency & Standards", "body": "Lack of options for navigation in the platform" },
-            { "style": "thought", "x": 447, "y": 880, "w": 505, "h": 128, "title": "Thinking out loud:", "bullets": ["to select, I have to go inside each lesson. why am I not able to see a preview from outside?", "what if I have some doubts, where can I ask?"] }
+            {
+              "style": "sticky",
+              "x": 92,
+              "y": 385,
+              "w": 224,
+              "h": 275,
+              "title": "Recognition Rather Than Recall",
+              "body": "No visual feedback for the users to recognise, difficult to access the sub lessons and if the number increases it becomes hard for users to navigate across all the options",
+              "markerX": 437,
+              "markerY": 300
+            },
+            {
+              "style": "sticky",
+              "x": 1604,
+              "y": 134,
+              "w": 224,
+              "h": 224,
+              "title": "Consistency & Standards",
+              "body": "Lack of options for navigation in the platform",
+              "markerX": 437,
+              "markerY": 214
+            },
+            {
+              "style": "thought",
+              "x": 447,
+              "y": 880,
+              "w": 505,
+              "h": 128,
+              "title": "Thinking out loud:",
+              "bullets": [
+                "to select, I have to go inside each lesson. why am I not able to see a preview from outside?",
+                "what if I have some doubts, where can I ask?"
+              ]
+            }
           ],
-          "captions": [{ "x": 448, "y": 826, "text": "old library page for learning contents" }]
+          "captions": [
+            {
+              "x": 448,
+              "y": 826,
+              "text": "old library page for learning contents"
+            }
+          ]
         },
         {
           "type": "annotated",
           "label": "Landing Page",
           "color": "red",
-          "frame": { "x": 92, "y": 188, "w": 1736, "h": 832 },
+          "frame": {
+            "x": 92,
+            "y": 188,
+            "w": 1736,
+            "h": 832
+          },
           "images": [
-            { "src": "/images/twig/old-website-top.webp", "alt": "Old Twig website 'What You Learn' section with four topic cards", "x": 448, "y": 192, "w": 1024, "h": 442 },
-            { "src": "/images/twig/old-website-bottom.webp", "alt": "Old Twig dashboard games and modules, as seen after signing in", "x": 448, "y": 672, "w": 1024, "h": 344 }
+            {
+              "src": "/images/twig/old-website-top.webp",
+              "alt": "Old Twig website 'What You Learn' section with four topic cards",
+              "x": 448,
+              "y": 192,
+              "w": 1024,
+              "h": 442
+            },
+            {
+              "src": "/images/twig/old-website-bottom.webp",
+              "alt": "Old Twig dashboard games and modules, as seen after signing in",
+              "x": 448,
+              "y": 672,
+              "w": 1024,
+              "h": 344
+            }
           ],
           "boxes": [
-            { "x": 439, "y": 336, "w": 1042, "h": 101 },
-            { "x": 439, "y": 663, "w": 1042, "h": 89 }
+            {
+              "x": 439,
+              "y": 336,
+              "w": 1042,
+              "h": 101
+            },
+            {
+              "x": 439,
+              "y": 663,
+              "w": 1042,
+              "h": 89
+            }
           ],
           "arrows": [
-            { "points": [[324, 387], [439, 387]], "head": "start" },
-            { "points": [[439, 714], [374, 714], [374, 387]], "head": "none" }
+            {
+              "points": [
+                {
+                  "x": 324,
+                  "y": 387
+                },
+                {
+                  "x": 439,
+                  "y": 387
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 439,
+                  "y": 714
+                },
+                {
+                  "x": 374,
+                  "y": 714
+                },
+                {
+                  "x": 374,
+                  "y": 387
+                }
+              ],
+              "head": "none"
+            }
           ],
           "notes": [
-            { "style": "sticky", "x": 92, "y": 326, "w": 224, "h": 298, "marker": [439, 336], "title": "Recognition Rather Than Recall", "body": "Users lose context moving from site to platform dashboard. No relation between what they are seeing on website and expecting on dashboard." }
+            {
+              "style": "sticky",
+              "x": 92,
+              "y": 326,
+              "w": 224,
+              "h": 298,
+              "title": "Recognition Rather Than Recall",
+              "body": "Users lose context moving from site to platform dashboard. No relation between what they are seeing on website and expecting on dashboard.",
+              "markerX": 439,
+              "markerY": 336
+            }
           ],
-          "captions": [{ "x": 448, "y": 638, "text": "old website about platform section" }]
+          "captions": [
+            {
+              "x": 448,
+              "y": 638,
+              "text": "old website about platform section"
+            }
+          ]
         }
       ]
     },
@@ -127,7 +511,10 @@
       "eyebrow": "framing the gaps",
       "title": "Problem Statement",
       "blocks": [
-        { "type": "quote", "body": "How might we help students and their parents to trust and navigate Twig from the first visit on the website to dashboard inside the platform, so that it feels like one consistent journey rather than two disconnected products?" }
+        {
+          "type": "quote",
+          "body": "How might we help students and their parents to trust and navigate Twig from the first visit on the website to dashboard inside the platform, so that it feels like one consistent journey rather than two disconnected products?"
+        }
       ]
     },
     {
@@ -135,7 +522,14 @@
       "eyebrow": "identifying pain points and opportunities",
       "title": "Journey Mapping & Analysis",
       "blocks": [
-        { "type": "image", "src": "/images/twig/journey-map.webp", "alt": "User journey map across Explore, Account, Dashboard and XP & Rewards — user actions, goals, feelings, pain points and opportunities", "width": 1224, "height": 805, "wide": true }
+        {
+          "type": "image",
+          "src": "/images/twig/journey-map.webp",
+          "alt": "User journey map across Explore, Account, Dashboard and XP & Rewards — user actions, goals, feelings, pain points and opportunities",
+          "width": 1224,
+          "height": 805,
+          "wide": true
+        }
       ]
     },
     {
@@ -146,10 +540,25 @@
         {
           "type": "split",
           "groups": [
-            { "heading": "Goal", "body": "To understand the information architecture & structure of the landing page across different Ed-tech platforms, and how they are managing the navigations between multiple products and large amount of content." },
-            { "heading": "Insights", "bullets": ["Relevance between landing page (website) and dashboard (platform)", "Trade-off between no of features or content vs clarity for navigation across the platform", "Consistency across the pages of the platform, smooth and intuitive experience"] }
+            {
+              "heading": "Goal",
+              "body": "To understand the information architecture & structure of the landing page across different Ed-tech platforms, and how they are managing the navigations between multiple products and large amount of content."
+            },
+            {
+              "heading": "Insights",
+              "bullets": [
+                "Relevance between landing page (website) and dashboard (platform)",
+                "Trade-off between no of features or content vs clarity for navigation across the platform",
+                "Consistency across the pages of the platform, smooth and intuitive experience"
+              ]
+            }
           ],
-          "image": { "src": "/images/twig/benchmarking.webp", "alt": "Board of competitor ed-tech platform screenshots collected for benchmarking", "width": 1158, "height": 872 }
+          "image": {
+            "src": "/images/twig/benchmarking.webp",
+            "alt": "Board of competitor ed-tech platform screenshots collected for benchmarking",
+            "width": 1158,
+            "height": 872
+          }
         }
       ]
     },
@@ -160,19 +569,50 @@
       "blocks": [
         {
           "type": "table",
-          "headers": ["Major Findings", "Action to make", "Brainstorming"],
+          "headers": [
+            "Major Findings",
+            "Action to make",
+            "Brainstorming"
+          ],
           "rows": [
-            ["Users are unable to understand relation key products", "Establish the relationship between landing and product page", "Design a product section for landing page in relation with dashboard features"],
-            ["Intuitive navigation for smooth user experience", "Trade-off between no of features or content vs clarity", "Clean dashboard, for intuitive navigation across the platform. Optimisation and prioritisation of necessary features"],
-            ["Consistency across all the pages", "Trade-off between no of features or content vs clarity", "Clean dashboard, for intuitive navigation across the platform. Optimisation and prioritisation of necessary features"]
+            {
+              "cells": [
+                "Users are unable to understand relation key products",
+                "Establish the relationship between landing and product page",
+                "Design a product section for landing page in relation with dashboard features"
+              ]
+            },
+            {
+              "cells": [
+                "Intuitive navigation for smooth user experience",
+                "Trade-off between no of features or content vs clarity",
+                "Clean dashboard, for intuitive navigation across the platform. Optimisation and prioritisation of necessary features"
+              ]
+            },
+            {
+              "cells": [
+                "Consistency across all the pages",
+                "Trade-off between no of features or content vs clarity",
+                "Clean dashboard, for intuitive navigation across the platform. Optimisation and prioritisation of necessary features"
+              ]
+            }
           ]
         },
         {
           "type": "principles",
           "items": [
-            { "title": "Entry", "body": "Carry users from the marketing site into the platform without losing context" },
-            { "title": "Navigation", "body": "Help students always know where they are and what to do next inside the platform" },
-            { "title": "Consistency", "body": "Platform needs clear navigation and consistent patterns across all interfaces." }
+            {
+              "title": "Entry",
+              "body": "Carry users from the marketing site into the platform without losing context"
+            },
+            {
+              "title": "Navigation",
+              "body": "Help students always know where they are and what to do next inside the platform"
+            },
+            {
+              "title": "Consistency",
+              "body": "Platform needs clear navigation and consistent patterns across all interfaces."
+            }
           ]
         }
       ]
@@ -185,28 +625,176 @@
         {
           "type": "annotated",
           "color": "grey",
-          "frame": { "x": 92, "y": 240, "w": 1736, "h": 720 },
+          "frame": {
+            "x": 92,
+            "y": 240,
+            "w": 1736,
+            "h": 720
+          },
           "images": [
-            { "src": "/images/twig/dashboard-v1.webp", "alt": "Revamped Twig dashboard with side navigation, today's mission, rewards, leaderboard and upcoming workshops", "x": 448, "y": 240, "w": 1024, "h": 674, "primary": true },
-            { "src": "/images/twig/premium-popup.webp", "alt": "Pop-up: Unlock all learning with premium — access to 100+ lessons, AI coach, portfolio, progress tracking; try 1 week for free", "x": 1568, "y": 410, "w": 256, "h": 246, "bare": true }
+            {
+              "src": "/images/twig/dashboard-v1.webp",
+              "alt": "Revamped Twig dashboard with side navigation, today's mission, rewards, leaderboard and upcoming workshops",
+              "x": 448,
+              "y": 240,
+              "w": 1024,
+              "h": 674,
+              "primary": true
+            },
+            {
+              "src": "/images/twig/premium-popup.webp",
+              "alt": "Pop-up: Unlock all learning with premium — access to 100+ lessons, AI coach, portfolio, progress tracking; try 1 week for free",
+              "x": 1568,
+              "y": 410,
+              "w": 256,
+              "h": 246,
+              "bare": true
+            }
           ],
           "boxes": [],
           "arrows": [
-            { "points": [[368, 330], [439, 330]], "head": "start" },
-            { "points": [[368, 512], [668, 512]], "head": "start" },
-            { "points": [[368, 800], [668, 800]], "head": "start" },
-            { "points": [[1552, 330], [1424, 330]], "head": "start" },
-            { "points": [[1552, 600], [960, 600]], "head": "start" },
-            { "points": [[1552, 720], [1416, 720]], "head": "start" }
+            {
+              "points": [
+                {
+                  "x": 368,
+                  "y": 330
+                },
+                {
+                  "x": 439,
+                  "y": 330
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 368,
+                  "y": 512
+                },
+                {
+                  "x": 668,
+                  "y": 512
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 368,
+                  "y": 800
+                },
+                {
+                  "x": 668,
+                  "y": 800
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1552,
+                  "y": 330
+                },
+                {
+                  "x": 1424,
+                  "y": 330
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1552,
+                  "y": 600
+                },
+                {
+                  "x": 960,
+                  "y": 600
+                }
+              ],
+              "head": "start"
+            },
+            {
+              "points": [
+                {
+                  "x": 1552,
+                  "y": 720
+                },
+                {
+                  "x": 1416,
+                  "y": 720
+                }
+              ],
+              "head": "start"
+            }
           ],
           "notes": [
-            { "style": "card", "x": 92, "y": 266, "w": 260, "h": 128, "marker": [470, 330], "title": "Navigation", "body": "featuring dashboard and key products tab for smooth navigation" },
-            { "style": "card", "x": 92, "y": 448, "w": 260, "h": 212, "marker": [668, 512], "title": "Suggestion of task", "body": "for the student to achieve daily goals and to build habit, showing progress to continue task from previous session" },
-            { "style": "card", "x": 92, "y": 736, "w": 260, "h": 100, "marker": [668, 800], "title": "Suggestion for other mini interactive lesson and games" },
-            { "style": "card", "x": 1568, "y": 266, "w": 260, "h": 128, "marker": [1424, 330], "title": "Rewards!", "body": "showing the rewards and daily streak for motivation on all pages" },
-            { "style": "card", "x": 1568, "y": 688, "w": 260, "h": 100, "marker": [1416, 720], "title": "Business oriented", "body": "push users to explore ongoing events" }
+            {
+              "style": "card",
+              "x": 92,
+              "y": 266,
+              "w": 260,
+              "h": 128,
+              "title": "Navigation",
+              "body": "featuring dashboard and key products tab for smooth navigation",
+              "markerX": 470,
+              "markerY": 330
+            },
+            {
+              "style": "card",
+              "x": 92,
+              "y": 448,
+              "w": 260,
+              "h": 212,
+              "title": "Suggestion of task",
+              "body": "for the student to achieve daily goals and to build habit, showing progress to continue task from previous session",
+              "markerX": 668,
+              "markerY": 512
+            },
+            {
+              "style": "card",
+              "x": 92,
+              "y": 736,
+              "w": 260,
+              "h": 100,
+              "title": "Suggestion for other mini interactive lesson and games",
+              "markerX": 668,
+              "markerY": 800
+            },
+            {
+              "style": "card",
+              "x": 1568,
+              "y": 266,
+              "w": 260,
+              "h": 128,
+              "title": "Rewards!",
+              "body": "showing the rewards and daily streak for motivation on all pages",
+              "markerX": 1424,
+              "markerY": 330
+            },
+            {
+              "style": "card",
+              "x": 1568,
+              "y": 688,
+              "w": 260,
+              "h": 100,
+              "title": "Business oriented",
+              "body": "push users to explore ongoing events",
+              "markerX": 1416,
+              "markerY": 720
+            }
           ],
-          "captions": [{ "x": 448, "y": 923, "text": "revamped dashboard design" }]
+          "captions": [
+            {
+              "x": 448,
+              "y": 923,
+              "text": "revamped dashboard design"
+            }
+          ]
         }
       ]
     },
@@ -219,13 +807,47 @@
           "type": "annotated",
           "color": "grey",
           "stackImages": true,
-          "frame": { "x": 92, "y": 208, "w": 1736, "h": 770 },
+          "frame": {
+            "x": 92,
+            "y": 208,
+            "w": 1736,
+            "h": 770
+          },
           "images": [
-            { "src": "/images/twig/game-page.webp", "alt": "Game page with an isometric city level map, daily earnings, portfolio chart and popular mini games", "x": 98, "y": 208, "w": 852, "h": 728, "caption": "game page design" },
-            { "src": "/images/twig/library-page.webp", "alt": "Redesigned library page with filters, learning path and lesson cards grouped into Finance and Savings", "x": 973, "y": 208, "w": 852, "h": 668, "caption": "library page re-design" }
+            {
+              "src": "/images/twig/game-page.webp",
+              "alt": "Game page with an isometric city level map, daily earnings, portfolio chart and popular mini games",
+              "x": 98,
+              "y": 208,
+              "w": 852,
+              "h": 728,
+              "caption": "game page design"
+            },
+            {
+              "src": "/images/twig/library-page.webp",
+              "alt": "Redesigned library page with filters, learning path and lesson cards grouped into Finance and Savings",
+              "x": 973,
+              "y": 208,
+              "w": 852,
+              "h": 668,
+              "caption": "library page re-design"
+            }
           ],
-          "boxes": [], "arrows": [], "notes": [],
-          "captions": [{ "x": 98, "y": 944, "text": "game page design" }, { "x": 973, "y": 884, "text": "library page re-design" }]
+          "boxes": [],
+          "arrows": [],
+          "notes": [],
+          "captions": [
+            {
+              "x": 98,
+              "y": 944,
+              "text": "game page design"
+            },
+            {
+              "x": 973,
+              "y": 884,
+              "text": "library page re-design"
+            }
+          ]
         }
       ]
     },
@@ -238,16 +860,57 @@
           "type": "annotated",
           "color": "grey",
           "stackImages": true,
-          "frame": { "x": 92, "y": 202, "w": 1736, "h": 856 },
+          "frame": {
+            "x": 92,
+            "y": 202,
+            "w": 1736,
+            "h": 856
+          },
           "images": [
-            { "src": "/images/twig/iteration-v1.webp", "alt": "Dashboard iteration v1 with workshops, learning path, premium card and leaderboard", "x": 92, "y": 202, "w": 852, "h": 513, "caption": "dashboard iteration v1" },
-            { "src": "/images/twig/iteration-v2.webp", "alt": "Dashboard iteration v2 with a list-style learning path: learn, play, take assessment, review portfolio", "x": 976, "y": 504, "w": 852, "h": 512, "caption": "dashboard iteration v2" }
+            {
+              "src": "/images/twig/iteration-v1.webp",
+              "alt": "Dashboard iteration v1 with workshops, learning path, premium card and leaderboard",
+              "x": 92,
+              "y": 202,
+              "w": 852,
+              "h": 513,
+              "caption": "dashboard iteration v1"
+            },
+            {
+              "src": "/images/twig/iteration-v2.webp",
+              "alt": "Dashboard iteration v2 with a list-style learning path: learn, play, take assessment, review portfolio",
+              "x": 976,
+              "y": 504,
+              "w": 852,
+              "h": 512,
+              "caption": "dashboard iteration v2"
+            }
           ],
-          "boxes": [], "arrows": [],
+          "boxes": [],
+          "arrows": [],
           "notes": [
-            { "style": "card", "x": 968, "y": 288, "w": 384, "h": 128, "afterImage": 0, "body": "Rejected and iterated again, as heavily loaded with text and features. Might be overwhelming for the new users." }
+            {
+              "style": "card",
+              "x": 968,
+              "y": 288,
+              "w": 384,
+              "h": 128,
+              "afterImage": 0,
+              "body": "Rejected and iterated again, as heavily loaded with text and features. Might be overwhelming for the new users."
+            }
           ],
-          "captions": [{ "x": 92, "y": 724, "text": "dashboard iteration v1" }, { "x": 976, "y": 1026, "text": "dashboard iteration v2" }]
+          "captions": [
+            {
+              "x": 92,
+              "y": 724,
+              "text": "dashboard iteration v1"
+            },
+            {
+              "x": 976,
+              "y": 1026,
+              "text": "dashboard iteration v2"
+            }
+          ]
         }
       ]
     },
@@ -268,5 +931,6 @@
         }
       ]
     }
-  ]
+  ],
+  "draft": false
 }

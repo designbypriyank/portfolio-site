@@ -1,0 +1,278 @@
+# Pages CMS configuration — https://pagescms.org
+# Edit content at app.pagescms.org (sign in with GitHub → portfolio-site).
+# Every save commits to GitHub, and Netlify republishes the site in ~1 minute.
+
+media:
+  input: public/images
+  output: /images
+
+content:
+  # ---------------------------------------------------------------
+  - name: site
+    label: Site settings
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - { name: name, label: Your name, type: string, required: true }
+      - { name: role, label: Tagline (under your name), type: string }
+      - { name: bio, label: Bio paragraphs, type: text, list: true }
+      - { name: email, label: Email, type: string }
+      - { name: resume, label: Resume link (PDF URL or /resume.pdf), type: string }
+      - name: links
+        label: Social links
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: href, label: URL, type: string }
+
+  # ---------------------------------------------------------------
+  - name: home-projects
+    label: Home page — project cards
+    type: file
+    path: src/data/projects.json
+    format: json
+    list: true
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: slug, label: Case study URL slug (matches the case study file), type: string, required: true }
+      - { name: summary, label: One-line summary, type: text }
+      - { name: meta, label: Tags (role, duration, focus), type: string, list: true }
+      - { name: cover, label: Card image, type: image }
+      - { name: coverAlt, label: Card image description (for accessibility), type: string }
+      - name: theme
+        label: Colour theme
+        type: select
+        options: { values: [theme-twig, theme-iitr] }
+      - name: status
+        label: Status
+        type: select
+        options:
+          values:
+            - { name: live, label: Live (links to case study) }
+            - { name: soon, label: Coming soon }
+
+  # ---------------------------------------------------------------
+  - name: projects
+    label: Case studies
+    type: collection
+    path: src/content/projects
+    format: json
+    view:
+      fields: [title, draft]
+    fields:
+      - { name: title, label: Project title, type: string, required: true }
+      - { name: slug, label: URL slug, type: string, required: true, description: "Page address: /work/<slug>" }
+      - { name: draft, label: Draft (hide from site), type: boolean }
+      - name: theme
+        label: Colour theme
+        type: select
+        options: { values: [theme-twig, theme-iitr] }
+      - name: seo
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: Browser tab title, type: string }
+          - { name: description, label: Search description, type: text }
+      - name: cover
+        label: Cover
+        type: object
+        fields:
+          - { name: logo, label: Logo, type: image }
+          - { name: kicker, label: Small label above title, type: string }
+          - { name: title, label: Headline, type: text }
+          - name: meta
+            label: Overview (Role, Duration, Focus…)
+            type: object
+            list: true
+            fields:
+              - { name: label, type: string }
+              - { name: value, type: string }
+          - name: image
+            label: Cover image
+            type: object
+            fields:
+              - { name: src, label: Image, type: image }
+              - { name: alt, label: Description, type: string }
+              - { name: width, type: number }
+              - { name: height, type: number }
+
+      - name: sections
+        label: Sections (drag to reorder)
+        type: object
+        list: true
+        fields:
+          - { name: id, label: Anchor id (no spaces), type: string }
+          - { name: eyebrow, label: Small label, type: string }
+          - { name: title, label: Section title, type: string }
+          - name: blocks
+            label: Content blocks (drag to reorder)
+            type: block
+            list: true
+            blockKey: type
+            blocks:
+              - name: text
+                label: Paragraph
+                fields:
+                  - { name: body, label: Text, type: text }
+
+              - name: quote
+                label: Big statement (e.g. problem statement)
+                fields:
+                  - { name: body, label: Text, type: text }
+
+              - name: image
+                label: Image
+                fields:
+                  - { name: src, label: Image, type: image }
+                  - { name: alt, label: Description, type: string }
+                  - { name: caption, label: Caption, type: string }
+                  - { name: width, label: Width (px), type: number }
+                  - { name: height, label: Height (px), type: number }
+
+              - name: split
+                label: Text + image side by side
+                fields:
+                  - name: groups
+                    label: Text groups
+                    type: object
+                    list: true
+                    fields:
+                      - { name: heading, label: Label, type: string }
+                      - { name: body, label: Paragraph, type: text }
+                      - { name: bullets, label: Bullet points, type: string, list: true }
+                  - name: image
+                    label: Image
+                    type: object
+                    fields:
+                      - { name: src, label: Image, type: image }
+                      - { name: alt, label: Description, type: string }
+                      - { name: width, type: number }
+                      - { name: height, type: number }
+
+              - name: products
+                label: Product cards
+                fields:
+                  - { name: caption, label: Caption, type: string }
+                  - name: items
+                    label: Cards
+                    type: object
+                    list: true
+                    fields:
+                      - { name: title, type: string }
+                      - { name: body, type: text }
+                      - { name: cta, label: Button text, type: string }
+                      - { name: color, label: Card colour (hex), type: string }
+                      - { name: button, label: Button colour (hex), type: string }
+                      - { name: border, label: Button border (hex), type: string }
+                      - name: icon
+                        type: select
+                        options: { values: [library, game, bot, clipboard] }
+
+              - name: table
+                label: Table
+                fields:
+                  - { name: headers, label: Column headings, type: string, list: true }
+                  - name: rows
+                    label: Rows
+                    type: object
+                    list: true
+                    fields:
+                      - { name: cells, label: Cells (left to right), type: text, list: true }
+
+              - name: principles
+                label: Principle cards
+                fields:
+                  - name: items
+                    type: object
+                    list: true
+                    fields:
+                      - { name: title, type: string }
+                      - { name: body, type: text }
+
+              - name: learnings
+                label: Learning cards
+                fields:
+                  - { name: items, label: Learnings, type: text, list: true }
+
+              - name: annotated
+                label: Annotated screen (Figma layout)
+                fields:
+                  - { name: label, label: Small label above, type: string }
+                  - name: color
+                    label: Line colour
+                    type: select
+                    options: { values: [red, grey] }
+                  - { name: stackImages, label: On mobile show images one by one, type: boolean }
+                  - name: images
+                    label: Screens
+                    type: object
+                    list: true
+                    fields:
+                      - { name: src, label: Image, type: image }
+                      - { name: alt, label: Description, type: string }
+                      - { name: caption, label: Caption (mobile), type: string }
+                      - { name: x, type: number }
+                      - { name: y, type: number }
+                      - { name: w, type: number }
+                      - { name: h, type: number }
+                      - { name: bare, label: No frame/shadow, type: boolean }
+                      - { name: primary, type: boolean, hidden: true }
+                  - name: notes
+                    label: Notes
+                    type: object
+                    list: true
+                    fields:
+                      - name: style
+                        type: select
+                        options: { values: [sticky, card, thought] }
+                      - { name: title, label: Title, type: string }
+                      - { name: body, label: Text, type: text }
+                      - { name: bullets, label: Bullets, type: text, list: true }
+                      - { name: x, type: number }
+                      - { name: y, type: number }
+                      - { name: w, type: number }
+                      - { name: h, type: number }
+                      - { name: markerX, label: Mobile marker X, type: number }
+                      - { name: markerY, label: Mobile marker Y, type: number }
+                      - { name: afterImage, label: "Show after screen number (mobile)", type: number }
+                  - name: captions
+                    label: Captions
+                    type: object
+                    list: true
+                    fields:
+                      - { name: text, type: string }
+                      - { name: x, type: number }
+                      - { name: y, type: number }
+                  - name: frame
+                    label: Layout frame (Figma coordinates — advanced)
+                    type: object
+                    fields:
+                      - { name: x, type: number }
+                      - { name: y, type: number }
+                      - { name: w, type: number }
+                      - { name: h, type: number }
+                  - name: boxes
+                    label: Dashed boxes (Figma coordinates — advanced)
+                    type: object
+                    list: true
+                    fields:
+                      - { name: x, type: number }
+                      - { name: y, type: number }
+                      - { name: w, type: number }
+                      - { name: h, type: number }
+                  - name: arrows
+                    label: Dashed arrows (Figma coordinates — advanced)
+                    type: object
+                    list: true
+                    fields:
+                      - name: head
+                        type: select
+                        options: { values: [start, end, none] }
+                      - name: points
+                        type: object
+                        list: true
+                        fields:
+                          - { name: x, type: number }
+                          - { name: y, type: number }
