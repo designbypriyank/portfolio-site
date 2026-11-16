@@ -2,20 +2,23 @@
 import Base from "../layouts/Base.astro";
 import site from "../data/site.json";
 import projects from "../data/projects.json";
+import FrameIntro from "../components/FrameIntro.astro";
 ---
 <Base title={`${site.name} — ${site.role}`}>
-  <section class="hero">
-    <div class="grid-lines" aria-hidden="true">
-      <span class="h h1"></span><span class="h h2"></span><span class="v"></span>
-      <span class="dot d1"></span><span class="dot d2"></span>
-    </div>
-    <div class="wrap hero-inner">
-      <p class="eyebrow">~portfolio~</p>
-      <h1>{site.name}</h1>
-      <p class="role">{site.role}</p>
-      <p class="lede">{site.bio[0]}</p>
-    </div>
-  </section>
+  <FrameIntro>
+    <section class="hero">
+      <div class="grid-lines" aria-hidden="true">
+        <span class="h h1"></span><span class="h h2"></span><span class="v"></span>
+        <span class="dot d1"></span><span class="dot d2"></span>
+      </div>
+      <div class="wrap hero-inner">
+        <p class="eyebrow">~portfolio~</p>
+        <h1>{site.name}</h1>
+        <p class="role">{site.role}</p>
+        <p class="lede">{site.bio[0]}</p>
+      </div>
+    </section>
+  </FrameIntro>
 
   <section id="work" class="wrap work">
     <h2 class="section-title">Selected work</h2>
@@ -63,7 +66,7 @@ import projects from "../data/projects.json";
 
 <style>
   /* Hero — echoes the dashed grid + dots from the Figma case study covers */
-  .hero { position: relative; overflow: hidden; padding: clamp(72px, 12vw, 140px) 0 clamp(64px, 10vw, 120px); border-bottom: 1px solid var(--line); }
+  .hero { position: relative; width: 100%; background: var(--bg); overflow: hidden; padding: clamp(72px, 12vw, 140px) 0 clamp(64px, 10vw, 120px); border-bottom: 1px solid var(--line); }
   .grid-lines { position: absolute; inset: 0; pointer-events: none; }
   .grid-lines .h { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--line-strong); }
   .grid-lines .h1 { top: 28%; }
