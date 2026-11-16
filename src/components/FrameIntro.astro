@@ -2,51 +2,42 @@
 /**
  * FrameIntro — "It's not the view. It's how you frame it."
  *
- * Act 1  The screen pins and each scroll step swaps to the next framed view of the room.
- * Act 2  The sequence ends on the smallest window.
- * Act 3  The camera pushes into that drawn window; it grows to fill the screen and the
- *        slotted content (the home hero) is what was "outside" all along.
- * Then   The pin releases and the page scrolls normally.
+ * Two scrolls to land:
+ *   Scroll 1  the room steps through its framed views (frame 1 → last frame).
+ *   Scroll 2  the camera pushes into the last sketched window; it squares up to the screen
+ *             and the slotted content (the home hero) is what was outside all along.
+ * Then the page scrolls normally.
  *
- * No JS / prefers-reduced-motion: the room is skipped and the slot renders as a normal hero.
+ * Desktop/landscape uses 16:9 frames (room extended to fill the screen); portrait uses 9:16.
+ * Skipped for prefers-reduced-motion, without JS, or when the page opens below the top / at a #hash.
  */
 interface Props {
-  /** Number of frames in /images/intro (frame-01.webp … frame-NN.webp). */
   frames?: number;
-  /** Scroll distance per frame, in viewport heights. */
-  step?: number;
-  /** Scroll distance of the "through the window" act, in viewport heights. */
-  zoom?: number;
 }
-const { frames = 10, step = 0.7, zoom = 1.6 } = Astro.props;
+const { frames = 10 } = Astro.props;
 const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, "0"));
 ---
-<section class="frame-intro" data-frames={frames} data-step={step} data-zoom={zoom} aria-label="Intro">
+<section class="frame-intro" data-frames={frames} aria-label="Intro">
   <div class="fi-stage">
     <div class="fi-room" aria-hidden="true">
       <div class="fi-zoom">
         {list.map((n, i) => (
-          <div class:list={["fi-backdrop", { on: i === 0 }]} style={`background-image:url(/images/intro/blur-${n}.webp)`}></div>
-        ))}
-        <div class="fi-frame">
-          {list.map((n, i) => (
+          <picture class:list={{ on: i === 0 }}>
+            <source media="(min-aspect-ratio: 1/1)" srcset={`/images/intro/wide-${n}.webp`} width="1920" height="1080" />
             <img
-              class:list={{ on: i === 0 }}
               src={`/images/intro/frame-${n}.webp`}
               alt=""
               width="720"
               height="1280"
               decoding="async"
-              fetchpriority={i === 0 ? "high" : "low"}
-              loading={i < 2 ? "eager" : "lazy"}
+              fetchpriority={i === 0 || i === frames - 1 ? "high" : "low"}
             />
-          ))}
-        </div>
+          </picture>
+        ))}
       </div>
       <div class="fi-hud fi-count"><span class="fi-n">01</span> / {list.length}</div>
-      <div class="fi-hud fi-cue"><span>Scroll</span><i></i></div>
+      <div class="fi-hud fi-cue"><span class="fi-cue-text">Scroll</span><i></i></div>
       <button class="fi-skip" type="button">Skip intro ↓</button>
-      <div class="fi-bar"></div>
     </div>
 
     <div class="fi-view">
@@ -56,45 +47,25 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
 </section>
 
 <style>
-  /* ---------- Fallback (no JS or reduced motion): just the hero ---------- */
+  /* ---------- Fallback (no JS / reduced motion / skipped): just the hero ---------- */
   .frame-intro { position: relative; }
   .fi-room { display: none; }
-  .fi-view { position: relative; }
+  .fi-view > :global(*) { min-height: calc(100svh - var(--fi-header, 61px)); display: flex; flex-direction: column; justify-content: center; }
 
-  /* ---------- Enhanced ---------- */
-  :global(.js) .frame-intro.is-live { height: var(--fi-len, 800vh); margin-top: calc(-1 * var(--fi-header, 61px)); }
-  :global(.js) .frame-intro.is-live .fi-stage {
-    position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; z-index: 30;
+  /* ---------- Live: a fixed stage over the page until the window opens ---------- */
+  .frame-intro.is-live { height: calc(100svh - var(--fi-header, 61px)); }
+  .frame-intro.is-live .fi-stage { position: fixed; inset: 0; z-index: 30; overflow: hidden; }
+  .frame-intro.is-live .fi-room { display: block; position: absolute; inset: 0; background: #cbc6c1; overflow: hidden; }
+  .frame-intro.is-live .fi-view {
+    position: absolute; inset: 0; padding-top: var(--fi-header, 61px); background: var(--bg);
+    clip-path: polygon(0 0, 0 0, 0 0, 0 0); will-change: clip-path;
   }
-  :global(.js) .frame-intro.is-live .fi-room {
-    display: block; position: absolute; inset: 0; background: #cbc6c1; overflow: hidden;
-  }
-  :global(.js) .frame-intro.is-live .fi-view {
-    position: absolute; inset: 0; background: var(--bg);
-    clip-path: polygon(0 0, 0 0, 0 0, 0 0);
-    will-change: clip-path;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  :global(.js) .frame-intro.is-live .fi-view > :global(*) { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-  .frame-intro.is-done .fi-view { clip-path: none !important; }
-  .frame-intro.is-done .fi-room { visibility: hidden; }
+  :global(html.fi-lock), :global(html.fi-lock body) { overflow: hidden; overscroll-behavior: none; }
 
   .fi-zoom { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 50%; }
-  .fi-backdrop {
-    position: absolute; inset: -6%; background-size: cover; background-position: center;
-    filter: blur(28px) saturate(.9); opacity: 0; transition: opacity .5s ease;
-  }
-  .fi-backdrop.on { opacity: 1; }
-  .fi-frame {
-    position: absolute; top: 0; left: 50%; height: 100%; aspect-ratio: 9 / 16;
-    transform: translateX(-50%); box-shadow: 0 0 120px rgba(0, 0, 0, .14);
-  }
-  .fi-frame img {
-    position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover;
-    opacity: 0; transform: scale(1.035);
-    transition: opacity .45s ease, transform .9s cubic-bezier(.2, .7, .2, 1);
-  }
-  .fi-frame img.on { opacity: 1; transform: none; }
+  .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .22s linear; }
+  .fi-zoom picture.on { opacity: 1; }
+  .fi-zoom img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
 
   .fi-hud {
     position: absolute; z-index: 2; color: #fff; mix-blend-mode: difference; pointer-events: none;
@@ -112,117 +83,164 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     border: 1px solid rgba(0, 0, 0, .08); border-radius: 999px; padding: 7px 14px; cursor: pointer;
     transition: opacity .35s ease, background .2s ease;
   }
-  @media (max-width: 600px) { .fi-cue { bottom: 12px; } .fi-cue span { display: none; } }
   .fi-skip:hover { background: rgba(255, 255, 255, .85); }
-  .fi-bar { position: absolute; z-index: 2; left: 0; top: 0; height: 2px; width: 100%; background: #fff; mix-blend-mode: difference; transform-origin: left; transform: scaleX(0); }
+  @media (max-width: 600px) { .fi-cue { bottom: 12px; } .fi-cue-text { display: none; } }
 
   /* While the room is on screen the site header steps aside */
   :global(body.fi-active .site-header) { opacity: 0; pointer-events: none; }
-  :global(.site-header) { transition: opacity .4s ease; }
+  :global(.site-header) { transition: opacity .5s ease; }
 </style>
 
 <script>
   type Pt = [number, number];
-  // Opening of the drawn window in the last frame, traced from the sketch (source px, 720 × 1280).
-  const QUAD: Pt[] = [[395, 387], [454, 378], [455, 424], [395, 431]]; // TL, TR, BR, BL
+  // Opening of the drawn window in the last frame (TL, TR, BR, BL), traced in 9:16 source px (720 × 1280).
+  const QUAD: Pt[] = [[395, 387], [454, 378], [455, 424], [395, 431]];
   const WIN = { w: 60, h: 53 };
+  // Logical size of each artwork; the 16:9 room is the 9:16 frame centred on a wider canvas.
+  const ART = { tall: { w: 720, h: 1280, ox: 0 }, wide: { w: 2276, h: 1280, ox: 778 } };
+
+  const SEQ_MS = 210;    // per frame on scroll 1
+  const ZOOM_MS = 1500;  // scroll 2
 
   const root = document.querySelector<HTMLElement>(".frame-intro");
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const startAtTop = scrollY < 4 && !location.hash;
 
-  if (root && !reduce) {
+  if (root && !reduce && startAtTop) {
     const N = Number(root.dataset.frames);
-    const STEP = Number(root.dataset.step);
-    const ZOOM = Number(root.dataset.zoom);
     const stage = root.querySelector<HTMLElement>(".fi-stage")!;
     const zoomEl = root.querySelector<HTMLElement>(".fi-zoom")!;
     const view = root.querySelector<HTMLElement>(".fi-view")!;
-    const imgs = [...root.querySelectorAll<HTMLImageElement>(".fi-frame img")];
-    const backs = [...root.querySelectorAll<HTMLElement>(".fi-backdrop")];
+    const pics = [...root.querySelectorAll<HTMLElement>(".fi-zoom picture")];
     const count = root.querySelector<HTMLElement>(".fi-n")!;
+    const countBox = root.querySelector<HTMLElement>(".fi-count")!;
     const cue = root.querySelector<HTMLElement>(".fi-cue")!;
-    const hudCount = root.querySelector<HTMLElement>(".fi-count")!;
     const skip = root.querySelector<HTMLButtonElement>(".fi-skip")!;
-    const bar = root.querySelector<HTMLElement>(".fi-bar")!;
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const wideMQ = matchMedia("(min-aspect-ratio: 1/1)");
 
     const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-    // Pinned scroll = frames + zoom act; the section is one viewport taller so the pin can release.
-    root.style.setProperty("--fi-len", `${(N * STEP + ZOOM) * 100 + 100}vh`);
-    const header = document.querySelector<HTMLElement>(".site-header");
-    if (header) root.style.setProperty("--fi-header", `${header.offsetHeight}px`); // sit under the header, full-bleed
+    if (header) document.documentElement.style.setProperty("--fi-header", `${header.offsetHeight}px`);
     root.classList.add("is-live");
+    document.documentElement.classList.add("fi-lock");
+    document.body.classList.add("fi-active");
+    history.scrollRestoration = "manual";
 
-    // Warm the remaining frames after the first paint so swaps never flash.
-    const idle = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 600));
-    idle(() => imgs.forEach((im) => (im.loading = "eager")));
-
+    // 0 = first frame, 1 = playing frames, 2 = on last frame, 3 = opening window, 4 = landed
+    let step = 0;
     let cur = 0;
-    const setFrame = (i: number) => {
-      if (i === cur) return;
-      imgs[cur].classList.remove("on"); backs[cur].classList.remove("on");
-      imgs[i].classList.add("on"); backs[i].classList.add("on");
+    const show = (i: number) => {
+      pics[cur].classList.remove("on");
+      pics[i].classList.add("on");
       count.textContent = String(i + 1).padStart(2, "0");
       cur = i;
     };
 
-    const render = () => {
+    const geometry = () => {
       const W = stage.clientWidth, H = stage.clientHeight;
-      const y = -root.getBoundingClientRect().top;          // scroll inside the intro
-      const pinned = (N * STEP + ZOOM) * H;
-      const seqEnd = N * STEP * H;
+      const a = wideMQ.matches ? ART.wide : ART.tall;
+      const s = Math.max(W / a.w, H / a.h);                 // object-fit: cover
+      const offX = (W - a.w * s) / 2, offY = (H - a.h * s) / 2;
+      const P = QUAD.map(([x, y]) => [offX + (x + a.ox) * s, offY + y * s] as Pt);
+      return { W, H, s, P };
+    };
 
-      setFrame(clamp(Math.floor(y / (STEP * H)), 0, N - 1));
-
-      // Act 3: push into the window
-      const z = ease(clamp((y - seqEnd) / (ZOOM * H)));
-      const fw = (H * 9) / 16, fl = (W - fw) / 2, k = H / 1280;
-      const P = QUAD.map(([x, yy]) => [fl + x * k, yy * k] as Pt);
-      const cx = P.reduce((s, p) => s + p[0], 0) / 4, cy = P.reduce((s, p) => s + p[1], 0) / 4;
-      const sMax = Math.max(W / (WIN.w * k), H / (WIN.h * k));
+    const paintZoom = (z: number) => {
+      const { W, H, s, P } = geometry();
+      const cx = P.reduce((t, p) => t + p[0], 0) / 4, cy = P.reduce((t, p) => t + p[1], 0) / 4;
+      const sMax = Math.max(W / (WIN.w * s), H / (WIN.h * s));
       const scale = Math.exp(lerp(0, Math.log(sMax), z));
       zoomEl.style.transformOrigin = `${cx}px ${cy}px`;
       zoomEl.style.transform = `scale(${scale})`;
-
-      const g = ease(clamp((z - 0.72) / 0.28));             // square the sketchy window up to the screen
+      const g = ease(clamp((z - 0.7) / 0.3));               // square the sketchy window up to the screen
       const SC: Pt[] = [[0, 0], [W, 0], [W, H], [0, H]];
-      const Q = P.map(([x, yy], i) => [
-        lerp(cx + (x - cx) * scale, SC[i][0], g),
-        lerp(cy + (yy - cy) * scale, SC[i][1], g),
-      ]);
-      view.style.clipPath = z <= 0
-        ? "polygon(0 0,0 0,0 0,0 0)"
-        : `polygon(${Q.map(([a, b]) => `${a.toFixed(1)}px ${b.toFixed(1)}px`).join(",")})`;
-
-      const done = z >= 1;
-      root.classList.toggle("is-done", done);
-      document.body.classList.toggle("fi-active", z < 0.9 && y < pinned + H);
-
-      // HUD
-      const p = clamp(y / pinned);
-      bar.style.transform = `scaleX(${p})`;
-      cue.style.opacity = y > H * 0.25 ? "0" : "1";
-      hudCount.style.opacity = skip.style.opacity = z > 0.02 ? "0" : "1";
-      skip.style.pointerEvents = z > 0.02 ? "none" : "auto";
+      const Q = P.map(([x, y], i) => [lerp(cx + (x - cx) * scale, SC[i][0], g), lerp(cy + (y - cy) * scale, SC[i][1], g)]);
+      view.style.clipPath = `polygon(${Q.map(([a, b]) => `${a.toFixed(1)}px ${b.toFixed(1)}px`).join(",")})`;
+      if (z > 0.8) document.body.classList.remove("fi-active");
     };
 
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => { render(); ticking = false; });
+    const hud = (visible: boolean) => {
+      for (const el of [countBox, cue, skip]) el.style.opacity = visible ? "1" : "0";
+      skip.style.pointerEvents = visible ? "auto" : "none";
     };
-    addEventListener("scroll", onScroll, { passive: true });
-    addEventListener("resize", onScroll);
 
-    skip.addEventListener("click", () => {
-      const H = stage.clientHeight;
-      const top = root.getBoundingClientRect().top + scrollY + (N * STEP + ZOOM) * H;
-      window.scrollTo({ top, behavior: "auto" });
-    });
+    function land() {
+      step = 4;
+      document.body.classList.remove("fi-active");
+      document.documentElement.classList.remove("fi-lock");
+      root!.classList.remove("is-live");
+      view.style.clipPath = "";
+      zoomEl.style.transform = "";
+      removeEventListener("wheel", onWheel);
+      removeEventListener("touchstart", onTouchStart);
+      removeEventListener("touchmove", onTouchMove);
+      removeEventListener("touchend", onTouchEnd);
+      removeEventListener("keydown", onKey);
+      scrollTo(0, 0);
+    }
 
-    render();
+    function playFrames() {
+      step = 1;
+      cue.style.opacity = "0";
+      let i = 0;
+      const tick = () => {
+        i += 1;
+        show(i);
+        if (i < N - 1) setTimeout(tick, SEQ_MS);
+        else setTimeout(() => { step = 2; cue.style.opacity = "1"; }, 380);
+      };
+      setTimeout(tick, 60);
+    }
+
+    function openWindow() {
+      step = 3;
+      hud(false);
+      const t0 = performance.now();
+      const frame = (now: number) => {
+        const t = clamp((now - t0) / ZOOM_MS);
+        paintZoom(ease(t));
+        if (t < 1) requestAnimationFrame(frame);
+        else land();
+      };
+      requestAnimationFrame(frame);
+    }
+
+    function advance() {
+      if (step === 0) playFrames();
+      else if (step === 2) openWindow();
+    }
+
+    // --- Input: one gesture = one step. Trackpad momentum belongs to the gesture that started it.
+    let lastWheel = 0, armed = true;
+    function onWheel(e: WheelEvent) {
+      e.preventDefault();
+      const now = performance.now();
+      if (now - lastWheel > 220) armed = true;               // a pause means a fresh gesture
+      lastWheel = now;
+      if (!armed || e.deltaY < 8 || step === 1 || step === 3) return;
+      armed = false;
+      advance();
+    }
+    let y0 = 0;
+    function onTouchStart(e: TouchEvent) { y0 = e.touches[0].clientY; }
+    function onTouchMove(e: TouchEvent) { if (e.cancelable) e.preventDefault(); }
+    function onTouchEnd(e: TouchEvent) {
+      const dy = y0 - (e.changedTouches[0]?.clientY ?? y0);
+      if (dy > 30) advance();
+    }
+    function onKey(e: KeyboardEvent) {
+      if (["ArrowDown", "PageDown", " ", "Enter"].includes(e.key) && document.activeElement !== skip) { e.preventDefault(); advance(); }
+    }
+    addEventListener("wheel", onWheel, { passive: false });
+    addEventListener("touchstart", onTouchStart, { passive: true });
+    addEventListener("touchmove", onTouchMove, { passive: false });
+    addEventListener("touchend", onTouchEnd, { passive: true });
+    addEventListener("keydown", onKey);
+    addEventListener("resize", () => { if (step === 3) paintZoom(1); });
+
+    skip.addEventListener("click", () => { if (step < 3) { show(N - 1); openWindow(); } });
   }
 </script>
