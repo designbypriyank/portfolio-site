@@ -2,13 +2,15 @@
 /**
  * FrameIntro — "It's not the view. It's how you frame it."
  *
- * Two scrolls to land:
- *   Scroll 1  the room steps through its framed views (frame 1 → last frame).
- *   Scroll 2  the camera pushes into the last sketched window; it squares up to the screen
- *             and the slotted content (the home hero) is what was outside all along.
- * Then the page scrolls normally.
+ * Scroll-scrubbed and short: roughly one full scroll steps through the framed views,
+ * one more pushes into the last sketched window, which squares up to the screen and
+ * reveals the slotted content (the home hero). Every pixel of scroll moves it, in both
+ * directions, until you land.
  *
- * Desktop/landscape uses 16:9 frames (room extended to fill the screen); portrait uses 9:16.
+ * Once landed, the intro collapses out of the page (scrolling up stops at the hero instead
+ * of replaying the room) and is skipped for the rest of the browser session.
+ *
+ * Landscape uses 16:9 frames (room extended to fill the screen); portrait uses 9:16.
  * Skipped for prefers-reduced-motion, without JS, or when the page opens below the top / at a #hash.
  */
 interface Props {
@@ -38,6 +40,7 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
       <div class="fi-hud fi-count"><span class="fi-n">01</span> / {list.length}</div>
       <div class="fi-hud fi-cue"><span class="fi-cue-text">Scroll</span><i></i></div>
       <button class="fi-skip" type="button">Skip intro ↓</button>
+      <div class="fi-bar"></div>
     </div>
 
     <div class="fi-view">
@@ -47,23 +50,22 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
 </section>
 
 <style>
-  /* ---------- Fallback (no JS / reduced motion / skipped): just the hero ---------- */
+  /* ---------- Fallback (no JS / reduced motion / skipped / landed): just the hero ---------- */
   .frame-intro { position: relative; }
   .fi-room { display: none; }
   .fi-view > :global(*) { min-height: calc(100svh - var(--fi-header, 61px)); display: flex; flex-direction: column; justify-content: center; }
 
-  /* ---------- Live: a fixed stage over the page until the window opens ---------- */
-  .frame-intro.is-live { height: calc(100svh - var(--fi-header, 61px)); }
-  .frame-intro.is-live .fi-stage { position: fixed; inset: 0; z-index: 30; overflow: hidden; }
+  /* ---------- Live: sticky stage pinned over the page for the length of the intro ---------- */
+  .frame-intro.is-live { height: calc(var(--fi-pin, 200vh) + 100svh); margin-top: calc(-1 * var(--fi-header, 61px)); }
+  .frame-intro.is-live .fi-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; z-index: 30; }
   .frame-intro.is-live .fi-room { display: block; position: absolute; inset: 0; background: #cbc6c1; overflow: hidden; }
   .frame-intro.is-live .fi-view {
     position: absolute; inset: 0; padding-top: var(--fi-header, 61px); background: var(--bg);
     clip-path: polygon(0 0, 0 0, 0 0, 0 0); will-change: clip-path;
   }
-  :global(html.fi-lock), :global(html.fi-lock body) { overflow: hidden; overscroll-behavior: none; }
 
   .fi-zoom { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 50%; }
-  .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .22s linear; }
+  .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .14s linear; }
   .fi-zoom picture.on { opacity: 1; }
   .fi-zoom img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
 
@@ -84,6 +86,10 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     transition: opacity .35s ease, background .2s ease;
   }
   .fi-skip:hover { background: rgba(255, 255, 255, .85); }
+  .fi-bar {
+    position: absolute; z-index: 2; left: 0; bottom: 0; height: 2px; width: 100%; background: #fff;
+    mix-blend-mode: difference; transform-origin: left; transform: scaleX(0); transition: opacity .35s ease;
+  }
   @media (max-width: 600px) { .fi-cue { bottom: 12px; } .fi-cue-text { display: none; } }
 
   /* While the room is on screen the site header steps aside */
@@ -99,14 +105,19 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
   // Logical size of each artwork; the 16:9 room is the 9:16 frame centred on a wider canvas.
   const ART = { tall: { w: 720, h: 1280, ox: 0 }, wide: { w: 2276, h: 1280, ox: 778 } };
 
-  const SEQ_MS = 210;    // per frame on scroll 1
-  const ZOOM_MS = 1500;  // scroll 2
+  // Scroll distances, in viewport heights. One full trackpad flick ≈ one viewport.
+  const FRAMES_VH = 1.0;   // all frames
+  const HOLD_VH = 0.15;    // a beat on the last window
+  const ZOOM_VH = 1.0;     // through the window
+  const SMOOTH = 0.2;      // 0–1, how quickly the picture catches up with the scroll
 
+  const KEY = "fi-seen";
+  const seen = (() => { try { return sessionStorage.getItem(KEY) === "1"; } catch { return false; } })();
   const root = document.querySelector<HTMLElement>(".frame-intro");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const startAtTop = scrollY < 4 && !location.hash;
 
-  if (root && !reduce && startAtTop) {
+  if (root && !reduce && startAtTop && !seen) {
     const N = Number(root.dataset.frames);
     const stage = root.querySelector<HTMLElement>(".fi-stage")!;
     const zoomEl = root.querySelector<HTMLElement>(".fi-zoom")!;
@@ -116,6 +127,7 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     const countBox = root.querySelector<HTMLElement>(".fi-count")!;
     const cue = root.querySelector<HTMLElement>(".fi-cue")!;
     const skip = root.querySelector<HTMLButtonElement>(".fi-skip")!;
+    const bar = root.querySelector<HTMLElement>(".fi-bar")!;
     const header = document.querySelector<HTMLElement>(".site-header");
     const wideMQ = matchMedia("(min-aspect-ratio: 1/1)");
 
@@ -123,16 +135,16 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
+    const PIN_VH = FRAMES_VH + HOLD_VH + ZOOM_VH;
     if (header) document.documentElement.style.setProperty("--fi-header", `${header.offsetHeight}px`);
+    root.style.setProperty("--fi-pin", `${PIN_VH * 100}vh`);
     root.classList.add("is-live");
-    document.documentElement.classList.add("fi-lock");
     document.body.classList.add("fi-active");
     history.scrollRestoration = "manual";
 
-    // 0 = first frame, 1 = playing frames, 2 = on last frame, 3 = opening window, 4 = landed
-    let step = 0;
     let cur = 0;
     const show = (i: number) => {
+      if (i === cur) return;
       pics[cur].classList.remove("on");
       pics[i].classList.add("on");
       count.textContent = String(i + 1).padStart(2, "0");
@@ -148,99 +160,70 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
       return { W, H, s, P };
     };
 
-    const paintZoom = (z: number) => {
+    const paint = (y: number) => {
       const { W, H, s, P } = geometry();
+
+      // Frames: scrubbed 1:1 with scroll, both directions
+      const pf = clamp(y / (FRAMES_VH * H));
+      show(Math.min(N - 1, Math.floor(pf * N)));
+
+      // Window: push in, then square the sketchy opening up to the screen
+      const z = ease(clamp((y - (FRAMES_VH + HOLD_VH) * H) / (ZOOM_VH * H)));
       const cx = P.reduce((t, p) => t + p[0], 0) / 4, cy = P.reduce((t, p) => t + p[1], 0) / 4;
       const sMax = Math.max(W / (WIN.w * s), H / (WIN.h * s));
       const scale = Math.exp(lerp(0, Math.log(sMax), z));
       zoomEl.style.transformOrigin = `${cx}px ${cy}px`;
       zoomEl.style.transform = `scale(${scale})`;
-      const g = ease(clamp((z - 0.7) / 0.3));               // square the sketchy window up to the screen
+      const g = ease(clamp((z - 0.7) / 0.3));
       const SC: Pt[] = [[0, 0], [W, 0], [W, H], [0, H]];
-      const Q = P.map(([x, y], i) => [lerp(cx + (x - cx) * scale, SC[i][0], g), lerp(cy + (y - cy) * scale, SC[i][1], g)]);
-      view.style.clipPath = `polygon(${Q.map(([a, b]) => `${a.toFixed(1)}px ${b.toFixed(1)}px`).join(",")})`;
-      if (z > 0.8) document.body.classList.remove("fi-active");
+      const Q = P.map(([x, yy], i) => [lerp(cx + (x - cx) * scale, SC[i][0], g), lerp(cy + (yy - cy) * scale, SC[i][1], g)]);
+      view.style.clipPath = z <= 0
+        ? "polygon(0 0,0 0,0 0,0 0)"
+        : `polygon(${Q.map(([a, b]) => `${a.toFixed(1)}px ${b.toFixed(1)}px`).join(",")})`;
+
+      // Chrome
+      document.body.classList.toggle("fi-active", z < 0.8);
+      const hudOn = z <= 0.02;
+      for (const el of [countBox, skip, bar]) el.style.opacity = hudOn ? "1" : "0";
+      skip.style.pointerEvents = hudOn ? "auto" : "none";
+      cue.style.opacity = y < H * 0.04 ? "1" : "0";
+      bar.style.transform = `scaleX(${clamp(y / (PIN_VH * H))})`;
+      return z;
     };
 
-    const hud = (visible: boolean) => {
-      for (const el of [countBox, cue, skip]) el.style.opacity = visible ? "1" : "0";
-      skip.style.pointerEvents = visible ? "auto" : "none";
+    // Smoothly chase the real scroll position so wheel notches don't stutter.
+    let shown = 0, raf = 0, landed = false;
+    const loop = () => {
+      const target = clamp(scrollY, 0, PIN_VH * stage.clientHeight);
+      shown += (target - shown) * SMOOTH;
+      if (Math.abs(target - shown) < 0.5) shown = target;
+      const z = paint(shown);
+      if (!landed && z >= 1 && scrollY >= PIN_VH * stage.clientHeight - 1) land();
+      raf = shown === target ? 0 : requestAnimationFrame(loop);
     };
+    const kick = () => { if (!raf && !landed) raf = requestAnimationFrame(loop); };
 
+    // Landed: take the intro out of the page without moving anything on screen.
     function land() {
-      step = 4;
-      document.body.classList.remove("fi-active");
-      document.documentElement.classList.remove("fi-lock");
+      landed = true;
+      const pin = PIN_VH * stage.clientHeight;
+      const y = scrollY;
       root!.classList.remove("is-live");
+      document.body.classList.remove("fi-active");
       view.style.clipPath = "";
       zoomEl.style.transform = "";
-      removeEventListener("wheel", onWheel);
-      removeEventListener("touchstart", onTouchStart);
-      removeEventListener("touchmove", onTouchMove);
-      removeEventListener("touchend", onTouchEnd);
-      removeEventListener("keydown", onKey);
-      scrollTo(0, 0);
+      removeEventListener("scroll", kick);
+      removeEventListener("resize", kick);
+      scrollTo({ top: Math.max(0, y - pin), behavior: "instant" as ScrollBehavior });
+      try { sessionStorage.setItem(KEY, "1"); } catch {}
     }
 
-    function playFrames() {
-      step = 1;
-      cue.style.opacity = "0";
-      let i = 0;
-      const tick = () => {
-        i += 1;
-        show(i);
-        if (i < N - 1) setTimeout(tick, SEQ_MS);
-        else setTimeout(() => { step = 2; cue.style.opacity = "1"; }, 380);
-      };
-      setTimeout(tick, 60);
-    }
-
-    function openWindow() {
-      step = 3;
-      hud(false);
-      const t0 = performance.now();
-      const frame = (now: number) => {
-        const t = clamp((now - t0) / ZOOM_MS);
-        paintZoom(ease(t));
-        if (t < 1) requestAnimationFrame(frame);
-        else land();
-      };
-      requestAnimationFrame(frame);
-    }
-
-    function advance() {
-      if (step === 0) playFrames();
-      else if (step === 2) openWindow();
-    }
-
-    // --- Input: one gesture = one step. Trackpad momentum belongs to the gesture that started it.
-    let lastWheel = 0, armed = true;
-    function onWheel(e: WheelEvent) {
-      e.preventDefault();
-      const now = performance.now();
-      if (now - lastWheel > 220) armed = true;               // a pause means a fresh gesture
-      lastWheel = now;
-      if (!armed || e.deltaY < 8 || step === 1 || step === 3) return;
-      armed = false;
-      advance();
-    }
-    let y0 = 0;
-    function onTouchStart(e: TouchEvent) { y0 = e.touches[0].clientY; }
-    function onTouchMove(e: TouchEvent) { if (e.cancelable) e.preventDefault(); }
-    function onTouchEnd(e: TouchEvent) {
-      const dy = y0 - (e.changedTouches[0]?.clientY ?? y0);
-      if (dy > 30) advance();
-    }
-    function onKey(e: KeyboardEvent) {
-      if (["ArrowDown", "PageDown", " ", "Enter"].includes(e.key) && document.activeElement !== skip) { e.preventDefault(); advance(); }
-    }
-    addEventListener("wheel", onWheel, { passive: false });
-    addEventListener("touchstart", onTouchStart, { passive: true });
-    addEventListener("touchmove", onTouchMove, { passive: false });
-    addEventListener("touchend", onTouchEnd, { passive: true });
-    addEventListener("keydown", onKey);
-    addEventListener("resize", () => { if (step === 3) paintZoom(1); });
-
-    skip.addEventListener("click", () => { if (step < 3) { show(N - 1); openWindow(); } });
+    addEventListener("scroll", kick, { passive: true });
+    addEventListener("resize", kick);
+    skip.addEventListener("click", () => {
+      scrollTo({ top: (FRAMES_VH + HOLD_VH) * stage.clientHeight, behavior: "instant" as ScrollBehavior });
+      requestAnimationFrame(() => scrollTo({ top: PIN_VH * stage.clientHeight, behavior: "smooth" }));
+    });
+    paint(0);
   }
 </script>
