@@ -56,7 +56,7 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
   .fi-view > :global(*) { min-height: calc(100svh - var(--fi-header, 61px)); display: flex; flex-direction: column; justify-content: center; }
 
   /* ---------- Live: sticky stage pinned over the page for the length of the intro ---------- */
-  .frame-intro.is-live { height: calc(var(--fi-pin, 200vh) + 100svh); margin-top: calc(-1 * var(--fi-header, 61px)); }
+  .frame-intro.is-live { height: calc(var(--fi-pin, 200vh) + var(--fi-buffer, 200vh) + 100svh); margin-top: calc(-1 * var(--fi-header, 61px)); }
   .frame-intro.is-live .fi-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; z-index: 30; }
   .frame-intro.is-live .fi-room { display: block; position: absolute; inset: 0; background: #cbc6c1; overflow: hidden; }
   .frame-intro.is-live .fi-view {
@@ -64,8 +64,9 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     clip-path: polygon(0 0, 0 0, 0 0, 0 0); will-change: clip-path;
   }
 
+  :global(html.fi-lock) { overflow: hidden; }
   .fi-zoom { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 50%; }
-  .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .14s linear; }
+  .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .2s linear; }
   .fi-zoom picture.on { opacity: 1; }
   .fi-zoom img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
 
@@ -109,7 +110,10 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
   const FRAMES_VH = 1.0;   // all frames
   const HOLD_VH = 0.15;    // a beat on the last window
   const ZOOM_VH = 1.0;     // through the window
-  const SMOOTH = 0.2;      // 0–1, how quickly the picture catches up with the scroll
+  // Speed limits, so a fast flick still reads as frames changing rather than a skip.
+  const FRAME_MS = 150;    // at most one frame change per this many ms
+  const HOLD_MS = 280;     // the last window stays on screen at least this long before the push
+  const ZOOM_MIN_MS = 1000; // the push into the window never takes less than this
 
   const KEY = "fi-seen";
   const seen = (() => { try { return sessionStorage.getItem(KEY) === "1"; } catch { return false; } })();
@@ -138,6 +142,8 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     const PIN_VH = FRAMES_VH + HOLD_VH + ZOOM_VH;
     if (header) document.documentElement.style.setProperty("--fi-header", `${header.offsetHeight}px`);
     root.style.setProperty("--fi-pin", `${PIN_VH * 100}vh`);
+    // extra pinned room so a hard flick can overshoot without carrying the stage away mid-animation
+    root.style.setProperty("--fi-buffer", "200vh");
     root.classList.add("is-live");
     document.body.classList.add("fi-active");
     history.scrollRestoration = "manual";
@@ -160,60 +166,89 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
       return { W, H, s, P };
     };
 
-    const paint = (y: number) => {
+    // Paint one state: which frame is showing, and how far the window push has gone (0–1).
+    const paint = (frame: number, zRaw: number, y: number) => {
       const { W, H, s, P } = geometry();
+      show(frame);
 
-      // Frames: scrubbed 1:1 with scroll, both directions
-      const pf = clamp(y / (FRAMES_VH * H));
-      show(Math.min(N - 1, Math.floor(pf * N)));
-
-      // Window: push in, then square the sketchy opening up to the screen
-      const z = ease(clamp((y - (FRAMES_VH + HOLD_VH) * H) / (ZOOM_VH * H)));
+      const z = ease(zRaw);
       const cx = P.reduce((t, p) => t + p[0], 0) / 4, cy = P.reduce((t, p) => t + p[1], 0) / 4;
       const sMax = Math.max(W / (WIN.w * s), H / (WIN.h * s));
       const scale = Math.exp(lerp(0, Math.log(sMax), z));
       zoomEl.style.transformOrigin = `${cx}px ${cy}px`;
       zoomEl.style.transform = `scale(${scale})`;
-      const g = ease(clamp((z - 0.7) / 0.3));
+      const g = ease(clamp((z - 0.7) / 0.3));               // square the sketchy opening up to the screen
       const SC: Pt[] = [[0, 0], [W, 0], [W, H], [0, H]];
       const Q = P.map(([x, yy], i) => [lerp(cx + (x - cx) * scale, SC[i][0], g), lerp(cy + (yy - cy) * scale, SC[i][1], g)]);
       view.style.clipPath = z <= 0
         ? "polygon(0 0,0 0,0 0,0 0)"
         : `polygon(${Q.map(([a, b]) => `${a.toFixed(1)}px ${b.toFixed(1)}px`).join(",")})`;
 
-      // Chrome
       document.body.classList.toggle("fi-active", z < 0.8);
       const hudOn = z <= 0.02;
       for (const el of [countBox, skip, bar]) el.style.opacity = hudOn ? "1" : "0";
       skip.style.pointerEvents = hudOn ? "auto" : "none";
       cue.style.opacity = y < H * 0.04 ? "1" : "0";
       bar.style.transform = `scaleX(${clamp(y / (PIN_VH * H))})`;
-      return z;
     };
 
-    // Smoothly chase the real scroll position so wheel notches don't stutter.
-    let shown = 0, raf = 0, landed = false;
-    const loop = () => {
-      const target = clamp(scrollY, 0, PIN_VH * stage.clientHeight);
-      shown += (target - shown) * SMOOTH;
-      if (Math.abs(target - shown) < 0.5) shown = target;
-      const z = paint(shown);
-      if (!landed && z >= 1 && scrollY >= PIN_VH * stage.clientHeight - 1) land();
-      raf = shown === target ? 0 : requestAnimationFrame(loop);
+    // The scroll sets where the intro should be; the playhead walks there at a capped pace:
+    // one frame at a time, then a short beat on the last window, then the push.
+    // Going back up runs the same path in reverse (push closes first, then frames step back).
+    let fShown = 0, zShown = 0, lastStep = 0, raf = 0, landed = false, prev = performance.now();
+    const root_ = document.documentElement;
+    const loop = (now: number) => {
+      const H = stage.clientHeight, pin = PIN_VH * H;
+      const y = clamp(scrollY, 0, pin);
+      const fTarget = Math.min(N - 1, Math.floor(clamp(y / (FRAMES_VH * H)) * N));
+      const zTarget = clamp((y - (FRAMES_VH + HOLD_VH) * H) / (ZOOM_VH * H));
+      const dt = Math.min(64, now - prev); prev = now;
+      const maxDz = dt / ZOOM_MIN_MS;
+
+      if (zShown > 0 && (fTarget < N - 1 || zTarget < zShown)) {
+        // close the window first
+        const goal = fTarget < N - 1 ? 0 : zTarget;
+        zShown = Math.max(goal, zShown - Math.max(maxDz, (zShown - goal) * 0.15));
+        if (zShown < 0.001) { zShown = 0; lastStep = now; }
+      } else if (zShown === 0 && fShown !== fTarget) {
+        if (now - lastStep >= FRAME_MS) { fShown += fTarget > fShown ? 1 : -1; lastStep = now; }
+      } else if (fShown === N - 1 && zTarget > zShown && now - lastStep >= HOLD_MS) {
+        zShown = Math.min(zTarget, zShown + Math.min(maxDz, Math.max((zTarget - zShown) * 0.15, maxDz * 0.25)));
+        if (zTarget - zShown < 0.002) zShown = zTarget;
+      }
+
+      paint(fShown, zShown, y);
+
+      // Scrolled past the end while the picture is still catching up: hold the page still until it does.
+      const atEnd = scrollY >= pin - 1;
+      root_.classList.toggle("fi-lock", atEnd && zShown < 1);
+      if (atEnd && zShown >= 1) { land(); raf = 0; return; }
+
+      const settled = fShown === fTarget && Math.abs(zShown - zTarget) < 0.002 && (zTarget === 0 || fShown === N - 1);
+      raf = settled ? 0 : requestAnimationFrame(loop);
     };
-    const kick = () => { if (!raf && !landed) raf = requestAnimationFrame(loop); };
+    const kick = () => {
+      if (landed) return;
+      const pin = PIN_VH * stage.clientHeight;
+      if (scrollY >= pin - 1) {
+        root_.classList.add("fi-lock");                                // stop momentum right away
+        if (scrollY > pin + stage.clientHeight) scrollTo({ top: pin, behavior: "instant" as ScrollBehavior });
+      }
+      if (!raf) { prev = performance.now(); raf = requestAnimationFrame(loop); }
+    };
 
     // Landed: take the intro out of the page without moving anything on screen.
     function land() {
       landed = true;
       const pin = PIN_VH * stage.clientHeight;
-      const y = scrollY;
+      const y = scrollY > pin + 2 ? pin : scrollY;            // an overshoot lands exactly on the hero
       root!.classList.remove("is-live");
       document.body.classList.remove("fi-active");
       view.style.clipPath = "";
       zoomEl.style.transform = "";
       removeEventListener("scroll", kick);
       removeEventListener("resize", kick);
+      root_.classList.remove("fi-lock");
       scrollTo({ top: Math.max(0, y - pin), behavior: "instant" as ScrollBehavior });
       try { sessionStorage.setItem(KEY, "1"); } catch {}
     }
@@ -221,9 +256,10 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", kick);
     skip.addEventListener("click", () => {
-      scrollTo({ top: (FRAMES_VH + HOLD_VH) * stage.clientHeight, behavior: "instant" as ScrollBehavior });
-      requestAnimationFrame(() => scrollTo({ top: PIN_VH * stage.clientHeight, behavior: "smooth" }));
+      fShown = N - 1; lastStep = performance.now() - HOLD_MS;   // jump to the last window, then push
+      scrollTo({ top: PIN_VH * stage.clientHeight, behavior: "instant" as ScrollBehavior });
+      kick();
     });
-    paint(0);
+    paint(0, 0, 0);
   }
 </script>
