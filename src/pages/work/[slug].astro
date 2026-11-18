@@ -15,6 +15,11 @@ export async function getStaticPaths() {
 const { project: p } = Astro.props as { project: any };
 const wideTypes = new Set(["annotated", "products"]);
 const textTypes = new Set(["text", "quote"]);
+// Align each section heading with the left edge of the content under it.
+const headWidth = (s: any) => {
+  const t = s.blocks?.[0]?.type;
+  return wideTypes.has(t) ? "xwide" : textTypes.has(t) ? "col" : "wide";
+};
 ---
 <Base title={p.seo?.title ?? p.title} description={p.seo?.description} theme={p.theme} image={p.cover?.image?.src}>
   <article class="cs">
@@ -38,7 +43,7 @@ const textTypes = new Set(["text", "quote"]);
     <!-- Sections -->
     {p.sections.map((s: any) => (
       <section id={s.id} class="cs-section" data-rail={s.title}>
-        <div class="col sec-head reveal">
+        <div class:list={["sec-head reveal", headWidth(s)]}>
           {s.eyebrow && <p class="label">{s.eyebrow}</p>}
           <h2>{s.title}</h2>
         </div>
