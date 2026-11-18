@@ -16,6 +16,7 @@
 interface Props {
   frames?: number;
 }
+import sketch from "../data/intro-sketch.json";
 const { frames = 10 } = Astro.props;
 const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, "0"));
 ---
@@ -36,10 +37,12 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
             />
           </picture>
         ))}
+        {/* The last window's sketch as vectors, so it stays sharp while the camera pushes in */}
+        <svg class="fi-sketch" viewBox="0 0 720 1280" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          {sketch.paths.map((d) => <path d={d} />)}
+        </svg>
       </div>
-      <div class="fi-hud fi-count"><span class="fi-n">01</span> / {list.length}</div>
       <div class="fi-hud fi-cue"><span class="fi-cue-text">Scroll</span><i></i></div>
-      <button class="fi-skip" type="button">Skip intro ↓</button>
       <div class="fi-bar"></div>
     </div>
 
@@ -65,9 +68,12 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
   }
 
   :global(html.fi-lock) { overflow: hidden; }
-  .fi-zoom { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 50%; }
+  .fi-zoom { position: absolute; inset: 0; transform-origin: 50% 50%; }  /* no will-change: lets the vector sketch re-render sharp at every zoom step */
   .fi-zoom picture { position: absolute; inset: 0; opacity: 0; transition: opacity .2s linear; }
   .fi-zoom picture.on { opacity: 1; }
+  .fi-sketch { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .2s linear; overflow: visible; }
+  .fi-sketch.on { opacity: 1; }
+  .fi-sketch path { fill: none; stroke: #1b1b1b; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   .fi-zoom img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
 
   .fi-hud {
@@ -75,18 +81,9 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-variant-numeric: tabular-nums;
     transition: opacity .35s ease;
   }
-  .fi-count { top: 22px; left: var(--gutter); }
   .fi-cue { bottom: 26px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .fi-cue i { width: 1px; height: 36px; background: currentColor; transform-origin: top; animation: fi-drip 1.6s ease-in-out infinite; }
   @keyframes fi-drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
-  .fi-skip {
-    position: absolute; z-index: 2; top: 14px; right: var(--gutter);
-    font: inherit; font-size: 12px; letter-spacing: .08em; color: var(--ink);
-    background: rgba(255, 255, 255, .55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(0, 0, 0, .08); border-radius: 999px; padding: 7px 14px; cursor: pointer;
-    transition: opacity .35s ease, background .2s ease;
-  }
-  .fi-skip:hover { background: rgba(255, 255, 255, .85); }
   .fi-bar {
     position: absolute; z-index: 2; left: 0; bottom: 0; height: 2px; width: 100%; background: #fff;
     mix-blend-mode: difference; transform-origin: left; transform: scaleX(0); transition: opacity .35s ease;
@@ -127,13 +124,14 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
     const zoomEl = root.querySelector<HTMLElement>(".fi-zoom")!;
     const view = root.querySelector<HTMLElement>(".fi-view")!;
     const pics = [...root.querySelectorAll<HTMLElement>(".fi-zoom picture")];
-    const count = root.querySelector<HTMLElement>(".fi-n")!;
-    const countBox = root.querySelector<HTMLElement>(".fi-count")!;
     const cue = root.querySelector<HTMLElement>(".fi-cue")!;
-    const skip = root.querySelector<HTMLButtonElement>(".fi-skip")!;
     const bar = root.querySelector<HTMLElement>(".fi-bar")!;
     const header = document.querySelector<HTMLElement>(".site-header");
     const wideMQ = matchMedia("(min-aspect-ratio: 1/1)");
+    const sketchEl = root.querySelector<SVGSVGElement>(".fi-sketch")!;
+    // same cover framing as the artwork: the 16:9 room is the 9:16 frame centred on a 2276-wide canvas
+    const fitSketch = () => sketchEl.setAttribute("viewBox", wideMQ.matches ? "-778 0 2276 1280" : "0 0 720 1280");
+    fitSketch(); wideMQ.addEventListener?.("change", fitSketch);
 
     const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -153,7 +151,7 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
       if (i === cur) return;
       pics[cur].classList.remove("on");
       pics[i].classList.add("on");
-      count.textContent = String(i + 1).padStart(2, "0");
+      sketchEl.classList.toggle("on", i === N - 1);
       cur = i;
     };
 
@@ -186,8 +184,7 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
 
       document.body.classList.toggle("fi-active", z < 0.8);
       const hudOn = z <= 0.02;
-      for (const el of [countBox, skip, bar]) el.style.opacity = hudOn ? "1" : "0";
-      skip.style.pointerEvents = hudOn ? "auto" : "none";
+      bar.style.opacity = hudOn ? "1" : "0";
       cue.style.opacity = y < H * 0.04 ? "1" : "0";
       bar.style.transform = `scaleX(${clamp(y / (PIN_VH * H))})`;
     };
@@ -255,11 +252,6 @@ const list = Array.from({ length: frames }, (_, i) => String(i + 1).padStart(2, 
 
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", kick);
-    skip.addEventListener("click", () => {
-      fShown = N - 1; lastStep = performance.now() - HOLD_MS;   // jump to the last window, then push
-      scrollTo({ top: PIN_VH * stage.clientHeight, behavior: "instant" as ScrollBehavior });
-      kick();
-    });
     paint(0, 0, 0);
   }
 </script>
