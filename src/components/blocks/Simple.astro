@@ -1,18 +1,23 @@
 ---
-/** Small text-first blocks: text, quote, image, split, table, principles, learnings. */
+/** Small text-first blocks: text, quote, image, split, table, principles, learnings, list, stats, cards, gallery. */
 const { block } = Astro.props as { block: any };
 const b = block;
 ---
-{b.type === "text" && <p class="b-text">{b.body}</p>}
+{b.type === "text" && (
+  b.heading
+    ? <div class="b-text-group"><p class="mini-label">{b.heading}</p><p class="b-text">{b.body}</p></div>
+    : <p class="b-text">{b.body}</p>
+)}
 
 {b.type === "quote" && (
   <blockquote class="b-quote"><p>{b.body}</p></blockquote>
 )}
 
 {b.type === "image" && (
-  <figure class="b-image">
+  <figure class:list={["b-image", { bare: b.bare, slide: b.slide }]}>
     <a href={b.src} target="_blank" rel="noopener" aria-label={`Open full size: ${b.alt}`}>
-      <img src={b.src} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async" />
+      <img src={b.src} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async"
+        style={b.maxWidth ? `max-width:min(100%, ${b.maxWidth}px)` : undefined} />
     </a>
     {b.caption && <figcaption>{b.caption}</figcaption>}
   </figure>
@@ -29,9 +34,10 @@ const b = block;
         </div>
       ))}
     </div>
-    <figure class="b-image">
+    <figure class:list={["b-image", { bare: b.image.bare }]}>
       <a href={b.image.src} target="_blank" rel="noopener" aria-label={`Open full size: ${b.image.alt}`}>
-        <img src={b.image.src} alt={b.image.alt} width={b.image.width} height={b.image.height} loading="lazy" decoding="async" />
+        <img src={b.image.src} alt={b.image.alt} width={b.image.width} height={b.image.height} loading="lazy" decoding="async"
+          style={b.image.maxWidth ? `max-width:min(100%, ${b.image.maxWidth}px)` : undefined} />
       </a>
     </figure>
   </div>
@@ -60,6 +66,74 @@ const b = block;
   </div>
 )}
 
+{b.type === "list" && (
+  <div class="b-list">
+    {b.heading && <p class="mini-label">{b.heading}</p>}
+    {b.ordered ? (
+      <ol class="nest">{b.items.map((it: any) => (
+        <li>{typeof it === "string" ? it : it.text}
+          {it.items && <ul class="nest">{it.items.map((s1: any) => (
+            <li>{typeof s1 === "string" ? s1 : s1.text}
+              {s1.items && <ul class="nest">{s1.items.map((s2: string) => <li>{s2}</li>)}</ul>}
+            </li>
+          ))}</ul>}
+        </li>
+      ))}</ol>
+    ) : (
+      <ul class="nest">{b.items.map((it: any) => (
+        <li>{typeof it === "string" ? it : it.text}
+          {it.items && <ul class="nest">{it.items.map((s1: any) => <li>{typeof s1 === "string" ? s1 : s1.text}</li>)}</ul>}
+        </li>
+      ))}</ul>
+    )}
+  </div>
+)}
+
+{b.type === "stats" && (
+  <div class="b-stats">
+    {b.items.map((it: any) => (
+      <div class="stat">
+        <div class="stat-head">
+          {it.index && <span class="stat-index">{it.index}</span>}
+          <div>
+            {it.stat && <p class="stat-num">{it.stat}</p>}
+            <h3>{it.title}</h3>
+          </div>
+        </div>
+        {it.bullets && <ul class="stat-list">{it.bullets.map((x: string) => <li>{x}</li>)}</ul>}
+      </div>
+    ))}
+  </div>
+)}
+
+{b.type === "cards" && (
+  <div class="b-cards">
+    {b.items.map((it: any, i: number) => (
+      <article class="card">
+        {it.image && <div class="card-img"><img src={it.image} alt={it.alt ?? ""} loading="lazy" decoding="async" /></div>}
+        <div class="card-txt">
+          <p class="card-num">{String(i + 1).padStart(2, "0")}</p>
+          <h3>{it.title}</h3>
+          {it.body && <p>{it.body}</p>}
+        </div>
+      </article>
+    ))}
+  </div>
+)}
+
+{b.type === "gallery" && (
+  <div class="b-gallery" style={`--cols:${b.columns ?? 2}`}>
+    {b.items.map((it: any) => (
+      <figure class="b-image">
+        <a href={it.src} target="_blank" rel="noopener" aria-label={`Open full size: ${it.alt}`}>
+          <img src={it.src} alt={it.alt} width={it.width} height={it.height} loading="lazy" decoding="async" />
+        </a>
+        {it.caption && <figcaption>{it.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+)}
+
 <style>
   .b-text { font-size: var(--fs-body); color: var(--ink-soft); line-height: 1.5; max-width: 72ch; letter-spacing: -0.02em; }
 
@@ -70,6 +144,12 @@ const b = block;
   .b-image a { display: block; cursor: zoom-in; }
   .b-image img { border-radius: 8px; box-shadow: var(--shadow); margin: 0 auto; }
   .b-image figcaption { margin-top: 12px; font-style: italic; font-weight: 300; color: var(--muted); }
+  /* Sits straight on the section background (used where the image carries its own background). */
+  .b-image.bare { background: none; padding: 0; }
+  .b-image.bare img { box-shadow: none; border-radius: var(--radius); }
+  /* 16:9 Figma slide shown edge to edge at its own ratio. */
+  .b-image.slide { background: none; padding: 0; }
+  .b-image.slide img { width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius-lg); box-shadow: none; border: 1px solid var(--line); }
 
   .b-split { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
   .b-split-text { display: grid; gap: 28px; }
@@ -81,7 +161,7 @@ const b = block;
   .b-table { overflow-x: auto; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
   table { width: 100%; border-collapse: collapse; min-width: 640px; }
   th { text-align: left; font-size: var(--fs-label); text-transform: uppercase; letter-spacing: var(--label-tracking); color: var(--muted); font-weight: 700; padding: 18px 20px; border-bottom: 1px solid var(--line); }
-  td { padding: 18px 20px; vertical-align: top; color: var(--ink-soft); border-top: 1px solid var(--line); line-height: 1.5; }
+  td { padding: 18px 20px; vertical-align: top; color: var(--ink-soft); border-top: 1px solid var(--line); line-height: 1.5; white-space: pre-line; }
   tr:first-child td { border-top: 0; }
   td:last-child { width: 44%; color: var(--ink); }
 
@@ -94,9 +174,41 @@ const b = block;
   .learning { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
   .learning p { color: var(--ink-soft); line-height: 1.5; }
 
+  .b-text-group .mini-label { margin-bottom: 8px; }
+
+  .b-list { color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.55; letter-spacing: -0.02em; }
+  .b-list .mini-label { margin-bottom: 12px; }
+  .nest { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
+  .nest .nest { margin-top: 10px; gap: 6px; }
+  ol.nest > li::marker { color: var(--accent); font-weight: 700; }
+  ul.nest > li::marker { color: var(--muted); }
+
+  .b-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2vw, 20px); }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: grid; gap: 18px; align-content: start; }
+  .stat-head { display: flex; gap: 16px; align-items: flex-end; padding-bottom: 16px; border-bottom: 1px solid var(--line-strong); }
+  .stat-index { font-size: 3rem; font-weight: 700; line-height: .9; color: var(--ink); letter-spacing: -0.04em; }
+  .stat-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); color: var(--muted); }
+  .stat h3 { font-size: 1.375rem; font-weight: 600; letter-spacing: -0.03em; color: var(--ink); margin-top: 2px; }
+  .stat-list { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; color: var(--ink-soft); line-height: 1.5; }
+
+  .b-cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(12px, 2vw, 20px); }
+  .card { grid-column: span 2; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .card:nth-child(4), .card:nth-child(5) { grid-column: span 3; }
+  .card-img { position: relative; flex: none; background: #fff; aspect-ratio: 4 / 3; border-bottom: 1px solid var(--line); }
+  .card-img img { position: absolute; inset: 20px; width: calc(100% - 40px); height: calc(100% - 40px); object-fit: contain; }
+  .card-txt { padding: 22px 24px 26px; }
+  .card-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); color: var(--accent); margin-bottom: 8px; }
+  .card h3 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.03em; color: var(--ink); line-height: 1.25; margin-bottom: 8px; }
+  .card p { color: var(--ink-soft); line-height: 1.5; }
+
+  .b-gallery { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: clamp(12px, 2vw, 20px); align-items: start; }
+
   @media (max-width: 860px) {
+    .b-stats, .b-gallery { grid-template-columns: 1fr; }
+    .b-cards { grid-template-columns: 1fr 1fr; }
+    .card, .card:nth-child(4), .card:nth-child(5) { grid-column: span 1; }
     .b-split, .b-principles { grid-template-columns: 1fr; }
     .b-learnings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (max-width: 560px) { .b-learnings { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .b-learnings, .b-cards { grid-template-columns: 1fr; } }
 </style>

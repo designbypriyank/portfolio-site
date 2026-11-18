@@ -1,0 +1,517 @@
+{
+  "slug": "iit-r-one",
+  "title": "IIT R – ONE",
+  "theme": "theme-iitr",
+  "seo": {
+    "title": "IIT R – ONE — Priyank Savaliya",
+    "description": "Re-designing IIT Roorkee's Academic Information System into one unified mobile app that simplifies the daily tasks of university students."
+  },
+  "cover": {
+    "kicker": "IIT R – ONE",
+    "title": "Re-Designing an Academic Info. System platform to simplify daily task of university students",
+    "meta": [
+      {
+        "label": "Team",
+        "value": "4 members"
+      },
+      {
+        "label": "Duration",
+        "value": "1.5 months"
+      },
+      {
+        "label": "Role",
+        "value": "UX Research · User Interviews"
+      }
+    ],
+    "image": {
+      "src": "/images/iitr-one/cover.webp",
+      "alt": "IIT R – ONE cover: illustration of the IIT Roorkee main building above a river and pine forest, with the IIT Roorkee and Department of Design logos",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "sections": [
+    {
+      "id": "scope",
+      "eyebrow": "project brief",
+      "title": "Scope & Objectives",
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "Scope",
+          "body": "The scope of this project focuses on understanding and redesigning the Academic Information System (AIS) at IIT Roorkee from a student-centered perspective. The goal is to map and improve all major touchpoints that students interact with throughout their academic journey. These interactions range from onboarding to academic and extracurricular processes, and finally to placements and alumni relations."
+        },
+        {
+          "type": "text",
+          "heading": "Features covered",
+          "body": "Registration, timetable, grades, leave/OD requests, resources, notifications, exams, admin forms"
+        },
+        {
+          "type": "list",
+          "heading": "Objectives",
+          "ordered": true,
+          "items": [
+            "To identify and document key student interactions within the AIS ecosystem (academic, administrative, and extracurricular).",
+            "To uncover pain points, inefficiencies, and emotional responses associated with these interactions.",
+            "To evaluate how existing digital tools and portals support or hinder students’ academic and administrative activities.",
+            "To define user needs, motivations, and expectations from an ideal academic information experience.",
+            "To generate insights and opportunity areas for creating a more unified, accessible, and engaging AIS experience."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "eyebrow": "understanding the context",
+      "title": "The Academic Information System",
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "About IIT Roorkee",
+          "body": "IIT Roorkee is a public technical university in Roorkee, Uttarakhand, India, renowned as a leading engineering and research institution. Established in 1847 as the Roorkee College and later becoming the Thomason College of Civil Engineering, it is one of India's oldest technical institutes. It offers bachelor's, postgraduate, and doctoral degrees in a wide range of engineering, science, and humanities disciplines."
+        },
+        {
+          "type": "text",
+          "heading": "What is it?",
+          "body": "Academic Information system refers to the various channels through which all academic/extracurricular day to day information reaches a student/faculty. System that enables this exchange of information between the students/faculty/staff."
+        },
+        {
+          "type": "image",
+          "src": "/images/iitr-one/channels.webp",
+          "alt": "Key channels: Instagram, Gmail, WhatsApp, Microsoft Teams, LinkedIn and Channel i, plus the Institute Lecture Hall and Conference Complex Booking System, the Online Academic Support and Information System, the Academic Affairs Office and the Ph.D. Portal",
+          "caption": "Key channels",
+          "width": 2080,
+          "height": 744
+        }
+      ]
+    },
+    {
+      "id": "users",
+      "tone": "dark",
+      "eyebrow": "who uses the AIS",
+      "title": "Who mainly uses these channels and for what?",
+      "blocks": [
+        {
+          "type": "stats",
+          "items": [
+            {
+              "index": "1.",
+              "stat": "10377",
+              "title": "Students",
+              "bullets": [
+                "Academic info - Timetable, mark sheets, subjects and credits, Attendance.",
+                "Placement/internship resume updates.",
+                "Noticeboard and extracurricular announcements.",
+                "Registration and graduation process/documents navigation.",
+                "Fee payments."
+              ]
+            },
+            {
+              "index": "2.",
+              "stat": "552",
+              "title": "Faculty",
+              "bullets": [
+                "Academic info - Timetable, mark sheets, subjects and credits, Attendance.",
+                "Updating academic information for students/approvals regarding student activities.",
+                "Class rescheduling"
+              ]
+            },
+            {
+              "index": "3.",
+              "stat": "681",
+              "title": "Staff",
+              "bullets": [
+                "Maintain student dashboards and data.",
+                "Maintain LHCC allotment, ensure to reflect the same on AIS.",
+                "Ensures smooth onboarding and off boarding during admissions and graduations.",
+                "Update TT within 3-4 hrs of changes.",
+                "Handles all outsourced services related to AIS, for example the OASIS forms for PHD students."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stakeholders",
+      "tone": "dark",
+      "eyebrow": "stakeholder mapping",
+      "title": "Who are the key stakeholders?",
+      "blocks": [
+        {
+          "type": "split",
+          "groups": [
+            {
+              "body": "Stakeholder mapping includes everyone that is affected by the AIS in the order of their involvement - primary, secondary and tertiary."
+            },
+            {
+              "heading": "Primary",
+              "bullets": [
+                "Students — Bachelors, Masters, PHD",
+                "DOAA, ADOAA, Assistant registrar, Deputy registrar",
+                "ICC management, Library Management",
+                "Faculties, Assistants, Admin Staffs"
+              ]
+            },
+            {
+              "heading": "Secondary",
+              "bullets": [
+                "Front desk staff, Clerical staff"
+              ]
+            },
+            {
+              "heading": "Tertiary",
+              "bullets": [
+                "Coders, Data entry staff, Maintenance coders, Compilance coders 3P"
+              ]
+            }
+          ],
+          "image": {
+            "src": "/images/iitr-one/stakeholders.webp",
+            "alt": "Stakeholder map as three concentric circles: primary at the centre, secondary around it and tertiary on the outside",
+            "width": 2104,
+            "height": 2080,
+            "bare": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "interviews",
+      "tone": "dark",
+      "eyebrow": "interview framework",
+      "title": "Understanding the AIS user experience",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Area",
+            "What we wanted to learn",
+            "Questions asked"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "User Profile",
+                "To identify users’ academic background and department, ensuring diversity across different programs",
+                "What is your current academic level?\nWhich department/branch are you enrolled in?"
+              ]
+            },
+            {
+              "cells": [
+                "Usage Pattern",
+                "To understand how long and how frequently students have been using IIT Roorkee academic websites.",
+                "How many years have you been using these websites?\nHow frequently do you access academics.iitr.ac.in?\nHow frequently do you access channeli.in?"
+              ]
+            },
+            {
+              "cells": [
+                "Feature Usage",
+                "To identify which sections and tools are most utilized on each platform.",
+                "What are your top 3 most used features on academics.iitr.ac.in?\nWhat are your top 3 most used features on channeli.in?"
+              ]
+            },
+            {
+              "cells": [
+                "Usability & Navigation",
+                "To evaluate clarity of text, structure, and ease of navigation on both platforms.",
+                "Rate the readability of text and content on academics.iitr.ac.in.\nRate the readability of text and content on channeli.in.\nHow easy is it to find specific information on each platform?"
+              ]
+            },
+            {
+              "cells": [
+                "Task Support & Understanding",
+                "To assess whether users rely on peers to perform tasks or navigate the platforms.",
+                "How often do you need advice/walkthroughs from a friend to do tasks on these platforms?\nMobile Experience: to gauge user satisfaction with mobile accessibility and interface.\nRate the mobile experience of both these platforms."
+              ]
+            },
+            {
+              "cells": [
+                "Information Confusion",
+                "To understand whether students face difficulty remembering where specific information is located.",
+                "How often do you forget which website contains the information you’re looking for?"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "persona",
+      "tone": "dark",
+      "eyebrow": "who we designed for",
+      "title": "User persona",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "/images/iitr-one/persona.webp",
+          "alt": "Persona: Pranit Mishra, 25, Masters student living in Ravindra Bhawan, IIT Roorkee, with decent technical ability. Quote: “I have a tight schedule I don’t want to spend half an hour filling forms.” Personality: goal oriented, learn more, skilled. Goal: quick, hassle free completion of required academic tasks. Needs: intuitive workflow and way finding; easy identification of the application for each task without memorising. Frustrations: OTP logins, un-intuitive UI and un-indicative way finding; tedious processes; often has to ask others to figure out the process.",
+          "width": 2064,
+          "height": 2448,
+          "maxWidth": 820,
+          "bare": true
+        }
+      ]
+    },
+    {
+      "id": "empathy",
+      "eyebrow": "what users think, see, feel and do",
+      "title": "Empathy map",
+      "blocks": [
+        {
+          "type": "gallery",
+          "columns": 2,
+          "items": [
+            {
+              "src": "/images/iitr-one/empathy-students.webp",
+              "alt": "Empathy map for students: thinks, sees, feels and does, with pains and goals such as too many platforms, ambiguity about task process, an integrated platform to complete tasks and an intuitive user flow",
+              "caption": "Students",
+              "width": 1410,
+              "height": 2028
+            },
+            {
+              "src": "/images/iitr-one/empathy-staff.webp",
+              "alt": "Empathy map for internal managing staff: thinks, sees, feels and does, such as responding to queries on time, managing portals with limited resources and handling repeated complaints",
+              "caption": "Internal Managing Staff",
+              "width": 1575,
+              "height": 1560
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "journey",
+      "eyebrow": "identifying pain points",
+      "title": "User Journey Map",
+      "blocks": [
+        {
+          "type": "gallery",
+          "columns": 1,
+          "items": [
+            {
+              "src": "/images/iitr-one/journey-ais.webp",
+              "alt": "Journey map of registering for courses on the AIS portal across four phases: user actions, goals, thoughts, feelings and frictions",
+              "caption": "This Journey map depicts the tasks that a student has to perform while registering for courses during the start of their semester on ais portal. It highlights the problems they face in this process",
+              "width": 2435,
+              "height": 1968
+            },
+            {
+              "src": "/images/iitr-one/journey-channeli.webp",
+              "alt": "Journey map of creating a resume on Channel i across five phases: user actions, goals, thoughts, feelings and frictions",
+              "caption": "This Journey map depicts the tasks that a student has to perform while creating a resume for the internship/placement season on channel i.",
+              "width": 2560,
+              "height": 1774
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "problems",
+      "eyebrow": "synthesis",
+      "title": "Problems Identified",
+      "blocks": [
+        {
+          "type": "cards",
+          "items": [
+            {
+              "image": "/images/iitr-one/problem-1.webp",
+              "alt": "Confused student surrounded by floating windows labelled AIS, noticeboard, marksheets, attendance and placement",
+              "title": "Lack of an Integrated platform for academic purposes",
+              "body": "For everyday activities students have to interact with too many multiple platforms - confusing & hassle some."
+            },
+            {
+              "image": "/images/iitr-one/problem-2.webp",
+              "alt": "Chained hands pulling files from an E-Library filing drawer",
+              "title": "Gap in digital library and reference material",
+              "body": "Many departments have a lot of reading/reference material to trace down in order to access - can these be compiled on one platform?"
+            },
+            {
+              "image": "/images/iitr-one/problem-3.webp",
+              "alt": "A calendar unravelling into a question mark",
+              "title": "Confusion in relaying Class room schedule",
+              "body": "The classroom allocation and changes on a daily basis - Information hierarchy is tedious - can this be more transparent and standardised?"
+            },
+            {
+              "image": "/images/iitr-one/problem-4.webp",
+              "alt": "A finger on a biometric attendance scanner with a 'remind me to take attendance' note",
+              "title": "Confusion in recording attendance data",
+              "body": "Marking attendance relies on a different platform completely - both faculty and students face regulatory issues - Can it be integrated into a simpler format?"
+            },
+            {
+              "image": "/images/iitr-one/problem-5.webp",
+              "alt": "A graduate climbing stairs while another figure falls, both wearing IITR caps",
+              "title": "Gap in Alumni-Student Relations",
+              "body": "No system in place to connect Alumni network to current students"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ideation",
+      "eyebrow": "brainstorming",
+      "title": "What can be done?",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "/images/iitr-one/brainstorm.webp",
+          "alt": "Hand-drawn mind map around a thinking student with four branches: integrations, user interface, wayfinding, and quick & responsive, each with ideas such as removing OTP login, real-time notifications, tooltips for new users and a mobile-first platform",
+          "width": 1393,
+          "height": 1976,
+          "maxWidth": 760
+        }
+      ]
+    },
+    {
+      "id": "problem-statement",
+      "eyebrow": "framing the problem",
+      "title": "Problem statement",
+      "blocks": [
+        {
+          "type": "quote",
+          "body": "How Might We help IIT Roorkee students to easily access and manage all their academic platforms through a single unified mobile application from using multiple disconnected and hard-to-navigate portals for different academic tasks to a single, seamless, and user-friendly mobile app interface integrating all academic services so as to improve accessibility, convenience, and overall academic efficiency for students despite institutional data integration challenges and varying platform compatibility"
+        },
+        {
+          "type": "image",
+          "src": "/images/iitr-one/hmw.webp",
+          "alt": "Illustration of characters on staircases around a spinning crystal, celebrating moving from many portals to one",
+          "width": 1563,
+          "height": 1028,
+          "maxWidth": 900
+        }
+      ]
+    },
+    {
+      "id": "prioritisation",
+      "eyebrow": "prioritising ideas",
+      "title": "Impact v/s Effort Analysis",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "/images/iitr-one/impact-effort.webp",
+          "alt": "Impact versus effort matrix of sticky notes: high impact, low effort ideas include real-time timetable notifications, assignment deadline alerts, easier login and an AI advisor; high impact, high effort ideas include a unified dashboard, integrating portals and a mobile-first platform",
+          "width": 1620,
+          "height": 1515,
+          "maxWidth": 900
+        }
+      ]
+    },
+    {
+      "id": "solution",
+      "eyebrow": "introducing you the solution",
+      "title": "Introducing IITR - ONE",
+      "blocks": [
+        {
+          "type": "split",
+          "groups": [
+            {
+              "body": "IITR has multiple platform problem which later leads to varied iconography, design system, user flows, etc."
+            },
+            {
+              "body": "By introducing IITR-One an app that solves this problem by unifying the multiple platforms we unify the design synergy at the same time solving the major user experience and user problems we encountered."
+            }
+          ],
+          "image": {
+            "src": "/images/iitr-one/splash.webp",
+            "alt": "IIT R One splash screen on an iPhone",
+            "width": 927,
+            "height": 1887,
+            "maxWidth": 300,
+            "bare": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "information",
+      "eyebrow": "what students look for most",
+      "title": "Most walked through informations",
+      "blocks": [
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            {
+              "text": "Personal academics informations",
+              "items": [
+                "today’s classes (venues + timings)",
+                "Total attendance",
+                "Next class (venues + timings)",
+                {
+                  "text": "Subject wise informations",
+                  "items": [
+                    "Next class (venues + timings)",
+                    "Subject’s attendance",
+                    "Next assignment",
+                    "Assignment briefs",
+                    "Subject materials"
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "Noticeboard",
+              "items": [
+                "desired announcements"
+              ]
+            },
+            {
+              "text": "Placement and internships",
+              "items": [
+                "Department oriented companies",
+                "Open to all companies",
+                "News and alerts",
+                "Application stage tracking",
+                "Verified resume and related documents"
+              ]
+            },
+            {
+              "text": "Applying Attendance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "eyebrow": "restructuring the content",
+      "title": "New information architecture",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "/images/iitr-one/information-architecture.webp",
+          "alt": "Information architecture: app opens to the home page, which branches into important latest news, personal academics, noticeboard, attendance, subject channels, and placement and internships, each with their sub-pages",
+          "width": 2560,
+          "height": 1440,
+          "slide": true
+        }
+      ]
+    },
+    {
+      "id": "flows",
+      "eyebrow": "the solution",
+      "title": "Key user flows",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "/images/iitr-one/flows-1.webp",
+          "alt": "Personal academic information — covers attendance, assignments, subject materials, class dates and venues in 4 clicks. Notice boards and announcements — 2 step user flow with announcement filters: All, PIC, General, Cultural, Sports, Maintenance, tech events, workshops, Events",
+          "width": 2560,
+          "height": 1440,
+          "slide": true
+        },
+        {
+          "type": "image",
+          "src": "/images/iitr-one/flows-2.webp",
+          "alt": "Attendance — 3 step user flow for applying attendance by dragging right during the current class. Placement and internships — 3 step process for viewing placements, ongoing applications, opportunities and news & alerts",
+          "width": 2560,
+          "height": 1440,
+          "slide": true
+        }
+      ]
+    }
+  ],
+  "draft": false
+}

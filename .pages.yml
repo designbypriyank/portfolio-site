@@ -106,6 +106,10 @@ content:
           - { name: id, label: Anchor id (no spaces), type: string }
           - { name: eyebrow, label: Small label, type: string }
           - { name: title, label: Section title, type: string }
+          - name: tone
+            label: Background
+            type: select
+            options: { values: [light, dark] }
           - name: blocks
             label: Content blocks (drag to reorder)
             type: block
@@ -115,6 +119,7 @@ content:
               - name: text
                 label: Paragraph
                 fields:
+                  - { name: heading, label: Small label (optional), type: string }
                   - { name: body, label: Text, type: text }
 
               - name: quote
@@ -130,6 +135,7 @@ content:
                   - { name: caption, label: Caption, type: string }
                   - { name: width, label: Width (px), type: number }
                   - { name: height, label: Height (px), type: number }
+                  - { name: maxWidth, label: Max display width (px, optional), type: number }
 
               - name: split
                 label: Text + image side by side
@@ -170,6 +176,57 @@ content:
                       - name: icon
                         type: select
                         options: { values: [library, game, bot, clipboard] }
+
+              - name: list
+                label: List (numbered or bullets)
+                fields:
+                  - { name: heading, label: Small label (optional), type: string }
+                  - { name: ordered, label: Numbered, type: boolean }
+                  - name: items
+                    label: Items
+                    type: object
+                    list: true
+                    fields:
+                      - { name: text, type: string }
+                      - { name: items, label: Sub-items, type: string, list: true }
+
+              - name: stats
+                label: Numbered stat cards
+                fields:
+                  - name: items
+                    type: object
+                    list: true
+                    fields:
+                      - { name: index, label: Number (e.g. 1.), type: string }
+                      - { name: stat, label: Figure (e.g. 10377), type: string }
+                      - { name: title, type: string }
+                      - { name: bullets, type: text, list: true }
+
+              - name: cards
+                label: Illustrated cards
+                fields:
+                  - name: items
+                    type: object
+                    list: true
+                    fields:
+                      - { name: image, type: image }
+                      - { name: alt, label: Image description, type: string }
+                      - { name: title, type: string }
+                      - { name: body, type: text }
+
+              - name: gallery
+                label: Image gallery
+                fields:
+                  - { name: columns, label: Columns, type: number }
+                  - name: items
+                    type: object
+                    list: true
+                    fields:
+                      - { name: src, label: Image, type: image }
+                      - { name: alt, label: Description, type: string }
+                      - { name: caption, type: string }
+                      - { name: width, type: number }
+                      - { name: height, type: number }
 
               - name: table
                 label: Table

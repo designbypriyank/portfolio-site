@@ -63,4 +63,4 @@
 
 /* Per-project accents (from each Figma cover) */
 .theme-twig { --accent: #f3821f; --accent-ink: #b85a0a; --accent-tint: #ffeee7; }
-.theme-iitr { --accent: #0b1f4a; --accent-ink: #0b1f4a; --accent-tint: #e8ebf3; }
+.theme-iitr { --accent: #215f96; --accent-ink: #1a65a3; --accent-tint: #e8eff7; --dark-bg: #215f96; }

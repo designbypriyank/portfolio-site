@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 
 const { project: p } = Astro.props as { project: any };
 const wideTypes = new Set(["annotated", "products"]);
-const textTypes = new Set(["text", "quote"]);
+const textTypes = new Set(["text", "quote", "list"]);
 // Align each section heading with the left edge of the content under it.
 const headWidth = (s: any) => {
   const t = s.blocks?.[0]?.type;
@@ -42,7 +42,7 @@ const headWidth = (s: any) => {
 
     <!-- Sections -->
     {p.sections.map((s: any) => (
-      <section id={s.id} class="cs-section" data-rail={s.title}>
+      <section id={s.id} class:list={["cs-section", s.tone === "dark" && "dark"]} data-rail={s.title}>
         <div class:list={["sec-head reveal", headWidth(s)]}>
           {s.eyebrow && <p class="label">{s.eyebrow}</p>}
           <h2>{s.title}</h2>
@@ -112,7 +112,18 @@ const headWidth = (s: any) => {
   .sec-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); }
   .block { width: 100%; min-width: 0; }
 
-  .back { padding: 96px 0; }
+  /* Dark band (matches the #215F96 slides in Figma). Consecutive dark sections read as one band. */
+  .cs-section.dark {
+    background: var(--dark-bg, #215f96);
+    padding-bottom: clamp(64px, 8vw, 112px);
+    --ink: #ecf6ff; --ink-soft: rgba(236, 246, 255, 0.86); --muted: #b0c7e9;
+    --panel: rgba(255, 255, 255, 0.07); --surface: rgba(255, 255, 255, 0.06);
+    --line: rgba(236, 246, 255, 0.16); --line-strong: rgba(236, 246, 255, 0.28);
+    --accent: #cce3ff;
+  }
+  .cs-section.dark + .cs-section.dark { padding-top: clamp(32px, 4vw, 56px); }
+
+  .back { padding-top: 96px; padding-bottom: 96px; }
   .back a { text-decoration: none; font-weight: 600; color: var(--ink); }
 
   /* Rail */
