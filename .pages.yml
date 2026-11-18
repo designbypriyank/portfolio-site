@@ -160,6 +160,7 @@ content:
                     type: object
                     list: true
                     fields:
+                      - { name: image, label: Card image (exported from Figma), type: image }
                       - { name: title, type: string }
                       - { name: body, type: text }
                       - { name: cta, label: Button text, type: string }

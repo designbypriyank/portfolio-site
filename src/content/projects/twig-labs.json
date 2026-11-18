@@ -48,7 +48,8 @@
               "color": "#f99244",
               "button": "#ffba92",
               "border": "#ad5707",
-              "icon": "library"
+              "icon": "library",
+              "image": "/images/twig/product-1.webp"
             },
             {
               "title": "Learn how money works in real life",
@@ -57,7 +58,8 @@
               "color": "#d96f4f",
               "button": "#d9a291",
               "border": "#82422f",
-              "icon": "game"
+              "icon": "game",
+              "image": "/images/twig/product-2.webp"
             },
             {
               "title": "Learn from experience",
@@ -66,7 +68,8 @@
               "color": "#c35e79",
               "button": "#e09aad",
               "border": "#ba2a50",
-              "icon": "bot"
+              "icon": "bot",
+              "image": "/images/twig/product-3.webp"
             },
             {
               "title": "Learn through industry experts",
@@ -75,7 +78,8 @@
               "color": "#ba6abb",
               "button": "#c889cb",
               "border": "#7a2d78",
-              "icon": "clipboard"
+              "icon": "clipboard",
+              "image": "/images/twig/product-4.webp"
             }
           ]
         },

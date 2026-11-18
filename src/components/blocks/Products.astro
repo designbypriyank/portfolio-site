@@ -1,5 +1,5 @@
 ---
-interface Item { title: string; body: string; cta: string; color: string; button: string; border: string; icon: string; }
+interface Item { title: string; body: string; cta: string; color: string; button: string; border: string; icon: string; image?: string; }
 interface Props { items: Item[]; caption?: string; }
 const { items, caption } = Astro.props;
 // Lucide icons — the same set used in the Figma design
@@ -13,7 +13,9 @@ const icons: Record<string, string> = {
 <figure class="products-fig">
   <div class="panel">
     <div class="products">
-      {items.map((p) => (
+      {items.map((p) => p.image ? (
+        <img class="product-img" src={p.image} alt={`${p.title}. ${p.body} (${p.cta})`} width="750" height="1040" loading="lazy" decoding="async" />
+      ) : (
         <article class="product" style={`--p-bg:${p.color};--p-btn:${p.button};--p-border:${p.border}`}>
           <span class="rings" aria-hidden="true"></span>
           <span class="blob" aria-hidden="true">
@@ -35,6 +37,8 @@ const icons: Record<string, string> = {
   .products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.8vw, 28px); }
   .product { position: relative; overflow: hidden; background: var(--p-bg); color: #fff; border-radius: 24px; padding: 76px 18px 18px; display: flex; flex-direction: column; gap: 10px; min-height: 380px; transition: transform .3s ease; }
   .product:hover { transform: translateY(-4px); }
+  .product-img { width: 100%; height: auto; display: block; transition: transform .3s ease; }
+  .product-img:hover { transform: translateY(-4px); }
   .rings { position: absolute; right: -36px; top: -36px; width: 125px; height: 125px; border-radius: 50%;
     border: 2px solid rgba(255,255,255,.35); box-shadow: 0 0 0 12px var(--p-bg), 0 0 0 14px rgba(255,255,255,.3), inset 0 0 0 12px var(--p-bg), inset 0 0 0 14px rgba(255,255,255,.3); }
   .blob { position: absolute; top: 24px; left: 18px; width: 72px; height: 72px; display: grid; place-items: center;
