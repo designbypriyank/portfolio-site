@@ -88,9 +88,10 @@ const headWidth = (s: any) => {
 
 <style>
   .col, .wide, .xwide { margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
-  .col { max-width: calc(var(--col) + 2 * var(--gutter)); }
-  .wide { max-width: calc(var(--wide) + 2 * var(--gutter)); }
-  .xwide { max-width: calc(var(--xwide) + 2 * var(--gutter)); }
+  /* One shared left edge for everything; narrower content just stops earlier on the right. */
+  .col, .wide, .xwide { max-width: calc(var(--xwide) + 2 * var(--gutter)); }
+  .col > :global(*) { max-width: var(--col); }
+  .wide > :global(*) { max-width: var(--wide); }
 
   .label { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--muted); }
 
