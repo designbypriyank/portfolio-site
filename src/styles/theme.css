@@ -41,7 +41,25 @@
   --xwide: 1440px;              /* annotated compositions */
   --max: 1160px;
   --gutter: clamp(16px, 4vw, 40px);
+
+  /* ---- Layout grid (home, header, footer) ----------------------------
+     Breakpoints: phone < 680 · large phone/small tablet 680–809 ·
+     tablet 810–1279 · desktop ≥ 1280.
+     Content sits in one centred container (max 1104px). The side margin
+     steps up per breakpoint; on wide screens the container stops growing
+     and the extra space becomes margin. Cards use a 24px gutter at
+     every size. */
+  --container: 1104px;
+  --margin: 24px;               /* phone + small tablet */
+  --grid-gap: 24px;             /* gutter between cards */
+  --bar-pad: 20px;              /* header side padding */
+  --header-h: 72px;
+  --section-y: 48px;            /* vertical padding of tinted bands */
+  --band: #efefef;              /* full-bleed band behind the card grid */
 }
+@media (min-width: 680px)  { :root { --bar-pad: 24px; } }
+@media (min-width: 810px)  { :root { --margin: 48px; --section-y: 64px; --bar-pad: 24px; } }
+@media (min-width: 1280px) { :root { --margin: 88px; --section-y: 72px; --bar-pad: 40px; } }
 
 /* Per-project accents (from each Figma cover) */
 .theme-twig { --accent: #f3821f; --accent-ink: #b85a0a; --accent-tint: #ffeee7; }

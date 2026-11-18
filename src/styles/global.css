@@ -24,6 +24,21 @@ p { margin: 0; }
 
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
 
+/* Home / header / footer container: fixed max width, stepped side margins */
+.container {
+  width: min(var(--container), 100% - 2 * var(--margin));
+  margin-inline: auto;
+}
+
+/* Uppercase tracked label (kickers, eyebrows, footer headings) */
+.kicker {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .eyebrow {
   font-size: var(--fs-sm);
   color: var(--muted);

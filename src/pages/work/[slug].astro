@@ -100,13 +100,13 @@ const textTypes = new Set(["text", "quote"]);
   .cover-shot img { width: 100%; border-radius: var(--radius-lg); background: var(--accent-tint); }
 
   /* Sections */
-  .cs-section { padding-top: clamp(80px, 11vw, 144px); scroll-margin-top: 72px; }
+  .cs-section { padding-top: clamp(80px, 11vw, 144px); scroll-margin-top: calc(var(--header-h) + 16px); }
   .sec-head { margin-bottom: clamp(24px, 3.5vw, 40px); }
   .sec-head h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 10px; color: var(--ink); }
   .sec-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); }
   .block { width: 100%; min-width: 0; }
 
-  .back { padding-top: 96px; }
+  .back { padding: 96px 0; }
   .back a { text-decoration: none; font-weight: 600; color: var(--ink); }
 
   /* Rail */

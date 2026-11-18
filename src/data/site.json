@@ -5,12 +5,16 @@
     "I'm an M.Des student at IIT Roorkee and a design intern at Twig Labs, an Indian ed-tech startup building financial literacy for young learners.",
     "My work sits where UX and product design meet education and traditional Indian craft."
   ],
-  "email": "",
+  "email": "priyank3vcs@gmail.com",
   "resume": "",
   "links": [
     {
       "label": "Behance",
       "href": "https://www.behance.net/priyanksavaliya"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/priyank-savaliya-"
     }
   ]
 }

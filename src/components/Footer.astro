@@ -1,20 +1,85 @@
 ---
 import site from "../data/site.json";
+import projects from "../data/projects.json";
 const year = new Date().getFullYear();
+const initials = site.name.split(" ").map((w) => w[0]).join("").slice(0, 2);
 ---
 <footer class="site-footer">
-  <div class="wrap row">
-    <span>© {year} {site.name}</span>
-    <span class="links">
-      {site.links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}</a>)}
-    </span>
+  <div class="container grid">
+    <div class="brand-col">
+      <a class="brand" href="/">
+        <span class="mark" aria-hidden="true">{initials}</span>
+        <span>{site.name}</span>
+      </a>
+      <p class="tagline">{site.role}</p>
+      <p class="copy">© {year} {site.name}. All rights reserved.</p>
+    </div>
+
+    <div class="col">
+      <h2 class="kicker">Work</h2>
+      <ul>
+        {projects.map((p) =>
+          <li>{p.status === "soon"
+            ? <span>{p.title} <em>(soon)</em></span>
+            : <a href={`/work/${p.slug}`}>{p.title}</a>}</li>
+        )}
+      </ul>
+    </div>
+
+    <div class="col">
+      <h2 class="kicker">Elsewhere</h2>
+      <ul>
+        {site.links.map((l) => <li><a href={l.href} target="_blank" rel="noopener">{l.label} ↗</a></li>)}
+        {site.resume && <li><a href={site.resume} target="_blank" rel="noopener">Resume ↗</a></li>}
+      </ul>
+    </div>
+
+    <div class="col">
+      <h2 class="kicker">Contact</h2>
+      <ul>
+        {site.email
+          ? <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          : <li><a href="/#contact">Get in touch</a></li>}
+        <li><span>Open to internships &amp; collaborations</span></li>
+        <li><span>IIT Roorkee, India</span></li>
+      </ul>
+    </div>
   </div>
 </footer>
 
 <style>
-  .site-footer { border-top: 1px solid var(--line); margin-top: 96px; padding: 28px 0 40px; font-size: var(--fs-sm); color: var(--muted); }
-  .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .links { display: flex; gap: 20px; }
-  a { text-decoration: none; }
-  a:hover { color: var(--ink); }
+  /* Light footer, same surface and type as the rest of the site */
+  .site-footer {
+    margin-top: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 64px 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  a { color: inherit; text-decoration: none; transition: color .2s ease; }
+  a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  /* ≥810: brand column + three link columns, aligned to the page container */
+  .grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px var(--grid-gap); }
+
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 600; font-size: 1rem; }
+  .mark { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-size: 0.75rem; }
+  .tagline { margin-top: 12px; }
+  .copy { margin-top: 20px; color: var(--muted); }
+
+  .col h2 { color: var(--muted); margin-bottom: 20px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; overflow-wrap: anywhere; }
+  em { font-style: normal; color: var(--muted); }
+
+  /* 680–809: brand on its own row, three columns below */
+  @media (max-width: 809.98px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .brand-col { grid-column: 1 / -1; }
+  }
+  /* < 680: everything stacks */
+  @media (max-width: 679.98px) {
+    .site-footer { padding: 48px 0; }
+    .grid { grid-template-columns: 1fr; gap: 36px; }
+  }
 </style>
