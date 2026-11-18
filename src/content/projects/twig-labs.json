@@ -27,8 +27,8 @@
     "image": {
       "src": "/images/twig/cover-mockup.webp",
       "alt": "Redesigned Twig student dashboard",
-      "width": 838,
-      "height": 558
+      "width": 2400,
+      "height": 1600
     }
   },
   "sections": [
