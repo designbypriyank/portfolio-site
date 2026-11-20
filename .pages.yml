@@ -16,6 +16,7 @@ content:
     fields:
       - { name: name, label: Your name, type: string, required: true }
       - { name: role, label: Tagline (under your name), type: string }
+      - { name: intro, label: Intro (under the headline on the home page), type: text }
       - { name: bio, label: Bio paragraphs, type: text, list: true }
       - { name: email, label: Email, type: string }
       - { name: resume, label: Resume link (PDF URL or /resume.pdf), type: string }

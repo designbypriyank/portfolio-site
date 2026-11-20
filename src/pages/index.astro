@@ -14,7 +14,7 @@ import projects from "../data/projects.json";
     <div class="container hero-inner">
       <p class="kicker hero-eyebrow">Portfolio · {site.name.split(" ")[0]}</p>
       <h1>{site.name}<br /><em>{site.role}.</em></h1>
-      <p class="lede">{site.bio[0]}</p>
+      <p class="lede">{site.intro ?? site.bio[0]}</p>
     </div>
   </section>
 
