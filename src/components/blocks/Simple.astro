@@ -14,7 +14,8 @@ const b = block;
 )}
 
 {b.type === "image" && (
-  <figure class:list={["b-image", { bare: b.bare, slide: b.slide }]}>
+  <figure class:list={["b-image", { bare: b.bare, slide: b.slide, boxed: b.background }]}
+    style={b.background ? `--box-bg:${b.background}` : undefined}>
     <a href={b.src} target="_blank" rel="noopener" aria-label={`Open full size: ${b.alt}`}>
       <img src={b.src} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async"
         style={b.maxWidth ? `max-width:min(100%, ${b.maxWidth}px)` : undefined} />
@@ -66,7 +67,16 @@ const b = block;
   </div>
 )}
 
-{b.type === "list" && (
+{b.type === "list" && b.cards && (
+  <div class="b-list">
+    {b.heading && <p class="mini-label">{b.heading}</p>}
+    <ol class="list-cards">{b.items.map((it: any, i: number) => (
+      <li><span class="lc-num">{String(i + 1).padStart(2, "0")}</span><span class="lc-txt">{typeof it === "string" ? it : it.text}</span></li>
+    ))}</ol>
+  </div>
+)}
+
+{b.type === "list" && !b.cards && (
   <div class="b-list">
     {b.heading && <p class="mini-label">{b.heading}</p>}
     {b.ordered ? (
@@ -148,6 +158,10 @@ const b = block;
   .b-image.bare { background: none; padding: 0; }
   .b-image.bare img { box-shadow: none; border-radius: var(--radius); }
   /* 16:9 Figma slide shown edge to edge at its own ratio. */
+  /* Bare image on a solid box (e.g. transparent PNG on white) */
+  .b-image.boxed { background: var(--box-bg); padding: 0 0 6px; border-radius: var(--radius-lg); overflow: hidden; }
+  .b-image.boxed img { border-radius: 0; }
+  .b-image.boxed figcaption { padding: 0 clamp(16px, 3vw, 48px) 12px; }
   .b-image.slide { background: none; padding: 0; }
   .b-image.slide img { width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius-lg); box-shadow: none; border: 1px solid var(--line); }
 
@@ -178,6 +192,12 @@ const b = block;
 
   .b-list { color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.55; letter-spacing: -0.02em; }
   .b-list .mini-label { margin-bottom: 12px; }
+  /* Ordered list shown as numbered cards */
+  .list-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .list-cards li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .lc-num { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); color: var(--accent); }
+  .lc-txt { color: var(--ink-soft); line-height: 1.5; }
+  @media (min-width: 1024px) { .list-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .nest { margin: 0; padding-left: 1.4em; display: grid; gap: 10px; }
   .nest .nest { margin-top: 10px; gap: 6px; }
   ol.nest > li::marker { color: var(--accent); font-weight: 700; }

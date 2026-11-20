@@ -136,6 +136,9 @@ content:
                   - { name: width, label: Width (px), type: number }
                   - { name: height, label: Height (px), type: number }
                   - { name: maxWidth, label: Max display width (px, optional), type: number }
+                  - { name: bare, label: No frame/shadow, type: boolean }
+                  - { name: slide, label: 16:9 slide, type: boolean }
+                  - { name: background, label: Box colour behind a bare image (e.g. #ffffff), type: string }
 
               - name: split
                 label: Text + image side by side
@@ -182,6 +185,7 @@ content:
                 fields:
                   - { name: heading, label: Small label (optional), type: string }
                   - { name: ordered, label: Numbered, type: boolean }
+                  - { name: cards, label: Show as numbered cards, type: boolean }
                   - name: items
                     label: Items
                     type: object

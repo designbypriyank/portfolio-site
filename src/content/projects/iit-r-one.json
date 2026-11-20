@@ -56,7 +56,8 @@
             "To evaluate how existing digital tools and portals support or hinder students’ academic and administrative activities.",
             "To define user needs, motivations, and expectations from an ideal academic information experience.",
             "To generate insights and opportunity areas for creating a more unified, accessible, and engaging AIS experience."
-          ]
+          ],
+          "cards": true
         }
       ]
     },
@@ -77,11 +78,13 @@
         },
         {
           "type": "image",
-          "src": "/images/iitr-one/channels.webp",
+          "src": "/images/iitr-one/channels-transparent.webp",
           "alt": "Key channels: Instagram, Gmail, WhatsApp, Microsoft Teams, LinkedIn and Channel i, plus the Institute Lecture Hall and Conference Complex Booking System, the Online Academic Support and Information System, the Academic Affairs Office and the Ph.D. Portal",
           "caption": "Key channels",
           "width": 2080,
-          "height": 744
+          "height": 744,
+          "bare": true,
+          "background": "#ffffff"
         }
       ]
     },
@@ -248,7 +251,6 @@
           "alt": "Persona: Pranit Mishra, 25, Masters student living in Ravindra Bhawan, IIT Roorkee, with decent technical ability. Quote: “I have a tight schedule I don’t want to spend half an hour filling forms.” Personality: goal oriented, learn more, skilled. Goal: quick, hassle free completion of required academic tasks. Needs: intuitive workflow and way finding; easy identification of the application for each task without memorising. Frustrations: OTP logins, un-intuitive UI and un-indicative way finding; tedious processes; often has to ask others to figure out the process.",
           "width": 2064,
           "height": 2448,
-          "maxWidth": 820,
           "bare": true
         }
       ]
@@ -260,7 +262,7 @@
       "blocks": [
         {
           "type": "gallery",
-          "columns": 2,
+          "columns": 1,
           "items": [
             {
               "src": "/images/iitr-one/empathy-students.webp",
@@ -425,56 +427,6 @@
       ]
     },
     {
-      "id": "information",
-      "eyebrow": "what students look for most",
-      "title": "Most walked through informations",
-      "blocks": [
-        {
-          "type": "list",
-          "ordered": true,
-          "items": [
-            {
-              "text": "Personal academics informations",
-              "items": [
-                "today’s classes (venues + timings)",
-                "Total attendance",
-                "Next class (venues + timings)",
-                {
-                  "text": "Subject wise informations",
-                  "items": [
-                    "Next class (venues + timings)",
-                    "Subject’s attendance",
-                    "Next assignment",
-                    "Assignment briefs",
-                    "Subject materials"
-                  ]
-                }
-              ]
-            },
-            {
-              "text": "Noticeboard",
-              "items": [
-                "desired announcements"
-              ]
-            },
-            {
-              "text": "Placement and internships",
-              "items": [
-                "Department oriented companies",
-                "Open to all companies",
-                "News and alerts",
-                "Application stage tracking",
-                "Verified resume and related documents"
-              ]
-            },
-            {
-              "text": "Applying Attendance"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "architecture",
       "eyebrow": "restructuring the content",
       "title": "New information architecture",
@@ -509,6 +461,14 @@
           "width": 2560,
           "height": 1440,
           "slide": true
+        },
+        {
+          "type": "image",
+          "src": "/images/iitr-one/prototype-screens.webp",
+          "alt": "Prototype screens of IIT-R ONE: the app icon above the splash, login and home screens, then personal academics, noticeboard, attendance and placements screens and their next steps, joined by a blue path on navy",
+          "width": 2400,
+          "height": 2688,
+          "bare": true
         }
       ]
     }

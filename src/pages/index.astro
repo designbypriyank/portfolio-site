@@ -18,7 +18,7 @@ import projects from "../data/projects.json";
     </div>
   </section>
 
-  <!-- Work: full-bleed tinted band, cards in a 1 → 2 column grid -->
+  <!-- Work: full-bleed tinted band, horizontal tiles, equal height -->
   <section id="work" class="band">
     <div class="container">
       <div class="band-head">
@@ -29,24 +29,21 @@ import projects from "../data/projects.json";
         {projects.map((p) => {
           const soon = p.status === "soon";
           const Tag = soon ? "div" : "a";
-          const [role, duration, focus] = p.meta;
           return (
-            <Tag class:list={["card", "reveal", p.theme, { soon }]} href={soon ? undefined : `/work/${p.slug}`}>
-              <div class="card-media">
+            <Tag class:list={["tile", "reveal", p.theme, { soon }]} href={soon ? undefined : `/work/${p.slug}`}>
+              <div class="tile-media">
                 <img src={p.cover} alt={p.coverAlt} loading="lazy" />
               </div>
-              <div class="card-body">
-                {focus && <p class="kicker card-kicker">{focus}</p>}
-                <h3>{p.title}</h3>
-                <ul class="meta">
-                  {[role, duration].filter(Boolean).map((m) => <li>{m}</li>)}
-                </ul>
+              <div class="tile-body">
+                <div class="tile-head">
+                  <h3>{p.title}</h3>
+                  <span class="arrow" aria-hidden="true">{soon ? "" : "→"}</span>
+                </div>
                 <p class="summary">{p.summary}</p>
-              </div>
-              <div class="card-foot">
-                <span class:list={["btn", { "btn-soon": soon }]}>
-                  {soon ? "Case study coming soon" : <>View case study <span class="arrow" aria-hidden="true">→</span></>}
-                </span>
+                <ul class="pills">
+                  {p.meta.filter(Boolean).map((m) => <li>{m}</li>)}
+                </ul>
+                {soon && <p class="soon-note">Case study coming soon</p>}
               </div>
             </Tag>
           );
@@ -90,7 +87,7 @@ import projects from "../data/projects.json";
   .hero-inner { position: relative; }
   .hero-eyebrow { color: var(--muted); }
   /* 36/44 phone → 48/60 tablet → 64/72 desktop, tracking −2% */
-  h1 { font-size: 2.25rem; line-height: 2.75rem; letter-spacing: -0.02em; font-weight: 600; margin-top: 16px; }
+  h1 { font-family: var(--font-sans); font-size: 2.25rem; line-height: 2.75rem; letter-spacing: -0.02em; font-weight: 600; margin-top: 16px; }
   h1 em { font-style: italic; font-weight: 300; color: var(--ink-soft); }
   .lede { max-width: 60ch; color: var(--ink-soft); margin-top: 16px; font-size: 1rem; line-height: 1.5rem; }
 
@@ -101,47 +98,39 @@ import projects from "../data/projects.json";
   .band-head .section-title { margin: 0; }
   .count { font-size: 0.875rem; color: var(--muted); }
 
-  /* < 680: one column · ≥ 680: two columns · 24px gutter throughout */
-  .cards { display: grid; grid-template-columns: 1fr; gap: var(--grid-gap); }
+  /* Horizontal tiles: media left, text right; stacked on small screens.
+     grid-auto-rows: 1fr keeps every tile the same height. */
+  .cards { display: grid; grid-template-columns: 1fr; grid-auto-rows: 1fr; gap: 32px; }
 
-  /* Card: 16px inset, 24px radius, 16px rhythm between parts */
-  .card {
-    display: flex; flex-direction: column; gap: 16px;
-    padding: 16px; border-radius: 24px;
-    background: var(--surface);
-    box-shadow: 0 9px 17px rgba(16, 20, 28, 0.05);
+  .tile {
+    display: grid; grid-template-columns: 1fr;
+    border: 1px solid var(--line); border-radius: var(--radius-lg);
+    overflow: hidden; background: var(--surface);
     text-decoration: none; color: inherit;
     transition: box-shadow .3s ease, transform .3s ease;
   }
-  a.card:hover { box-shadow: 0 16px 40px rgba(16, 20, 28, 0.10); transform: translateY(-3px); }
+  a.tile:hover { box-shadow: 0 16px 40px rgba(16, 20, 28, 0.10); transform: translateY(-3px); }
 
-  .card-media {
-    aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden;
-    background: var(--accent-tint);
-    display: grid; place-items: center; padding: 6% 10%;
+  .tile-media {
+    position: relative; background: var(--accent-tint);
+    padding: 24px; display: grid; place-items: center;
   }
-  .card-media img { width: 100%; height: 100%; object-fit: contain; transition: transform .5s ease; }
-  a.card:hover .card-media img { transform: scale(1.03); }
-  .theme-iitr .card-media { padding: 0; background: #0b1f4a; }
-  .theme-iitr .card-media img { object-fit: cover; }
+  .tile-media img { border-radius: 8px; box-shadow: 0 12px 40px rgba(15, 23, 42, 0.14); transition: transform .5s ease; }
+  a.tile:hover .tile-media img { transform: scale(1.02); }
+  /* IIT cover is a full-bleed illustration */
+  .theme-iitr .tile-media { padding: 0; background: #0b1f4a; aspect-ratio: 16 / 10; }
+  .theme-iitr .tile-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; }
 
-  .card-body { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; }
-  .card-kicker { color: var(--accent-ink); }
-  .card h3 { font-size: 1.75rem; line-height: 2rem; font-weight: 500; letter-spacing: -0.01em; margin-top: 4px; }
-  .meta { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; font-size: 0.875rem; line-height: 1.25rem; color: var(--muted); }
-  .meta li + li::before { content: "•"; margin: 0 10px; }
-  .summary { font-size: 1rem; line-height: 1.5rem; color: var(--ink-soft); margin-top: 4px; }
-
-  /* Button pinned to the card bottom so paired cards line up */
-  .card-foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); }
-  .btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    height: 52px; border-radius: 8px;
-    background: var(--ink); color: #fff; font-size: 1rem;
-  }
-  .btn .arrow { transition: transform .3s ease; }
-  a.card:hover .btn .arrow { transform: translateX(4px); }
-  .btn-soon { background: var(--accent-tint); color: var(--accent-ink); font-size: 0.9375rem; }
+  .tile-body { padding: 24px; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .tile-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .tile h3 { font-size: var(--fs-xl); font-weight: 700; color: var(--accent); }
+  .theme-twig h3 { font-style: italic; font-weight: 400; }
+  .tile .arrow { font-size: 1.5rem; color: var(--accent); transition: transform .3s ease; }
+  a.tile:hover .arrow { transform: translateX(4px); }
+  .summary { font-size: var(--fs-lg); line-height: 1.45; color: var(--ink-soft); }
+  .pills { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .pills li { font-size: var(--fs-xs); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; color: var(--ink-soft); background: var(--bg); }
+  .soon-note { font-size: var(--fs-sm); color: var(--accent-ink); }
 
   /* ---------- About / contact ---------- */
   .about { padding-top: calc(var(--section-y) + 16px); }
@@ -154,13 +143,20 @@ import projects from "../data/projects.json";
 
   /* ---------- Breakpoints ---------- */
   @media (max-width: 809.98px) { .grid-lines { display: none; } }
-  @media (min-width: 680px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 809.98px) { .cards { grid-auto-rows: auto; } }
   @media (min-width: 810px) {
-    .hero { padding: 64px 0 72px; }
+    /* Text sits centred between the two dashed lines (22% and 84%) */
+    .hero { height: 640px; padding: 0; }
+    .hero-inner { position: absolute; top: 22%; bottom: 16%; left: 0; right: 0; display: flex; flex-direction: column; justify-content: center; }
     h1 { font-size: 3rem; line-height: 3.75rem; }
+    .cards { gap: 48px; }
+    .tile { grid-template-columns: 1.25fr 1fr; }
+    .tile-media { padding: 44px; }
+    .theme-iitr .tile-media { aspect-ratio: auto; padding: 0; }
+    .tile-body { padding: 44px; }
   }
   @media (min-width: 1280px) {
-    .hero { padding: 72px 0 80px; }
+    .hero { height: 760px; }
     h1 { font-size: 4rem; line-height: 4.5rem; }
     .lede { font-size: 1.125rem; line-height: 1.75rem; }
   }

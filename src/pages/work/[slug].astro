@@ -49,7 +49,7 @@ const headWidth = (s: any) => {
         </div>
         <div class="sec-body">
           {s.blocks.map((b: any) => (
-            <div class:list={["block reveal", wideTypes.has(b.type) ? "xwide" : textTypes.has(b.type) ? "col" : "wide"]}>
+            <div class:list={["block reveal", wideTypes.has(b.type) ? "xwide" : (textTypes.has(b.type) && !b.cards) ? "col" : "wide"]}>
               {b.type === "annotated" ? <Annotated {...b} />
                 : b.type === "products" ? <Products {...b} />
                 : <Simple block={b} />}
@@ -89,7 +89,7 @@ const headWidth = (s: any) => {
 <style>
   .col, .wide, .xwide { margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
   /* One shared left edge for everything; narrower content just stops earlier on the right. */
-  .col, .wide, .xwide { max-width: calc(var(--xwide) + 2 * var(--gutter)); }
+  .col, .wide, .xwide { max-width: calc(var(--cs-max) + 2 * var(--gutter)); }
   .col > :global(*) { max-width: var(--col); }
   .wide > :global(*) { max-width: var(--wide); }
 
@@ -98,7 +98,7 @@ const headWidth = (s: any) => {
   /* Cover */
   .cover { padding-top: clamp(48px, 8vw, 104px); }
   .logo { width: 96px; height: auto; margin-bottom: 40px; }
-  .cover h1 { font-size: var(--fs-hero); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 14px; color: var(--ink); }
+  .cover h1 { font-size: var(--fs-hero); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 14px; color: var(--heading, var(--ink)); }
   .meta { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px clamp(24px, 5vw, 64px); margin: 36px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
   .meta dt { font-size: var(--fs-label); font-weight: 700; letter-spacing: var(--label-tracking); text-transform: uppercase; color: var(--muted); }
   .meta dd { margin: 6px 0 0; font-size: var(--fs-body); color: var(--ink); font-weight: 500; letter-spacing: -0.02em; }
@@ -108,7 +108,7 @@ const headWidth = (s: any) => {
   /* Sections */
   .cs-section { padding-top: clamp(80px, 11vw, 144px); scroll-margin-top: calc(var(--header-h) + 16px); }
   .sec-head { margin-bottom: clamp(24px, 3.5vw, 40px); }
-  .sec-head h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 10px; color: var(--ink); }
+  .sec-head h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-top: 10px; color: var(--heading, var(--ink)); }
   .sec-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vw, 64px); }
   .block { width: 100%; min-width: 0; }
 
@@ -119,7 +119,7 @@ const headWidth = (s: any) => {
     --ink: #ecf6ff; --ink-soft: rgba(236, 246, 255, 0.86); --muted: #b0c7e9;
     --panel: rgba(255, 255, 255, 0.07); --surface: rgba(255, 255, 255, 0.06);
     --line: rgba(236, 246, 255, 0.16); --line-strong: rgba(236, 246, 255, 0.28);
-    --accent: #cce3ff;
+    --accent: #cce3ff; --heading: var(--ink);
   }
   .cs-section.dark + .cs-section.dark { padding-top: clamp(32px, 4vw, 56px); }
 

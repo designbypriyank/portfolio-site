@@ -5,6 +5,7 @@
 :root {
   /* Type */
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Figtree", var(--font-sans);   /* headings */
   --fs-xs: 0.8125rem;
   --fs-sm: 0.9375rem;
   --fs-md: 1.0625rem;
@@ -39,6 +40,7 @@
   --col: 880px;                 /* reading column */
   --wide: 1200px;               /* images, tables */
   --xwide: 1440px;              /* annotated compositions */
+  --cs-max: 1040px;             /* case-study content width (200px margins at 1440) */
   --max: 1160px;
   --gutter: clamp(16px, 4vw, 40px);
 
@@ -62,5 +64,5 @@
 @media (min-width: 1280px) { :root { --margin: 88px; --section-y: 72px; --bar-pad: 40px; } }
 
 /* Per-project accents (from each Figma cover) */
-.theme-twig { --accent: #f3821f; --accent-ink: #b85a0a; --accent-tint: #ffeee7; }
-.theme-iitr { --accent: #215f96; --accent-ink: #1a65a3; --accent-tint: #e8eff7; --dark-bg: #215f96; }
+.theme-twig { --accent: #f3821f; --accent-ink: #b85a0a; --accent-tint: #ffeee7; --heading: #f3821f; }
+.theme-iitr { --accent: #215f96; --accent-ink: #1a65a3; --accent-tint: #e8eff7; --dark-bg: #215f96; --heading: #215f96; }
