@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 
 const { project: p } = Astro.props as { project: any };
 const wideTypes = new Set(["annotated", "products"]);
-const textTypes = new Set(["text", "quote", "list"]);
+const textTypes = new Set(["text", "list"]);  // quotes span the full content width, like cards and tables
 // Align each section heading with the left edge of the content under it.
 const headWidth = (s: any) => {
   const t = s.blocks?.[0]?.type;
